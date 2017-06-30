@@ -18,15 +18,77 @@ STATE state;
 static int GAME_INIT_FLAG = UNFINISHED;
 static int DEVELOPPE_MODE = OFF;
 
+static int jump_time = -1;
+static int jump_f    = 0;
+static double jump_v    = 0;
+static double jump_z    = 0;
+
+static void printString(char* str, int x0, int y0){
+    glDisable(GL_LIGHTING);
+    // 平行投影にする
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+    gluOrtho2D(0, viewport_width, viewport_height, 0);
+
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glLoadIdentity();
+
+    // 画面上にテキスト描画
+    glRasterPos2f(x0, y0);
+    int length = 0; while(str[length]!='\0')length++;
+    int i;
+    for(i=0;i<length;i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, str[i]);
+
+    glPopMatrix();
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
+}
+
+static double play_pos(int flag){
+    double g = 17.0;
+    double jump = 13.0;
+
+    double z;
+
+    double second = (frame_count-jump_time)/50.0;
+
+    if(flag == 1){
+        if(jump_time<0){
+            jump_z = 0.0;
+            jump_v = jump;
+        }else{
+            jump_z = jump_z + jump_v*second - g/2.0*second*second;
+            jump_v = jump_v - g*second + jump;
+        }
+        jump_time = frame_count;
+    }
+    if(jump_time < 0)   z = 0.0;
+    else                z = jump_z + jump_v*second - g/2.0*second*second;
+
+    if(z>20.0)z = 20.0;
+    if(z< -20.0)z = -20.0;
+
+    return z;
+}
+
 // ゲーム開始時に実行する
 static void game_init(void){
     printf("now game initialize.\n");
     glEnable(GL_LIGHTING);
+    jump_time = -1;
+    jump_time = -1;
+    jump_f    = 0;
+    jump_v    = 0;
+    jump_z    = 0;
 }
 
 // ゲームを終わる時に実行する
 static void game_exit(void){
     printf("now game exit.\n");
+    jump_time = -1;
 }
 
 // 座標軸を描画する関数
@@ -127,8 +189,11 @@ static void player_disp(int width,int height){
 
     double rad = frame_count / 10.0;
 
+    double z = play_pos(0);
+
     glPushMatrix();
-    glTranslatef(3.0*cos(rad), 0.0, 3.0*sin(rad));
+    //glTranslatef(3.0*cos(rad), z, 3.0*sin(rad));
+    glTranslatef(0.0, z, 0.0);
     glRotated(0.0, 1.0, 0.0, 0.0);
     glRotated(rad, 0.0, 1.0, 0.0);
     glRotated(0.0, 0.0, 0.0, 1.0);
@@ -178,6 +243,12 @@ void game_disp(void){
         player_disp(viewport_width,viewport_height);    // プレイヤー向けの描画関数を呼び出す
     }
 
+    glDisable(GL_LIGHTING);
+    glColor3d(0.9,0.3,0.3);
+    printString("press d key to developper mode",30,30);
+    printString("press UP key to start and jump",30,60);
+    glEnable(GL_LIGHTING);
+
     glutSwapBuffers();              // 描画を更新
 }
 
@@ -205,6 +276,9 @@ void game_keyboard(unsigned char key, int x, int y){
 
 void game_special(int key, int x, int y){
     switch(key){
+        case GLUT_KEY_UP:
+            play_pos(1);
+            break;
         case GLUT_KEY_LEFT:
             game_exit();
             if(DEVELOPPE_MODE == ON){
