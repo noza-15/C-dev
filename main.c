@@ -106,6 +106,20 @@ void keyboard(unsigned char key, int x, int y){
     }
 }
 
+void special(int key, int x, int y){
+    switch(state){
+        case MENU:
+            menu_special(key,x,y);
+            break;
+        case GAME:
+            game_special(key,x,y);
+            break;
+        case SCORE:
+            score_special(key,x,y);
+            break;
+    }
+}
+
 // マウスの入力があった時に呼び出される関数
 void mouse(int button, int mouse_state, int x, int y){
     switch(state){
@@ -153,6 +167,7 @@ int main(int argc, char *argv[]){
     glutDisplayFunc(display);               // 描画関数
     glutReshapeFunc(reshape);               // ウィンドウサイズが変わった時の関数
     glutKeyboardFunc(keyboard);             // キーボードの受け取り
+    glutSpecialFunc(special);               // 特殊キーが押された時
     glutMouseFunc(mouse);                   // マウスの受け取り
 
     init();                                 // 適切な初期化をする

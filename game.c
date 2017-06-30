@@ -21,6 +21,7 @@ static int DEVELOPPE_MODE = OFF;
 // ゲーム開始時に実行する
 static void game_init(void){
     printf("now game initialize.\n");
+    glEnable(GL_LIGHTING);
 }
 
 // ゲームを終わる時に実行する
@@ -107,6 +108,7 @@ static void lines(int max, double interval){
     glPopMatrix();
 }
 
+// プレイヤー向け描画関数
 static void player_disp(int width,int height){
 
     if(GAME_INIT_FLAG == UNFINISHED){
@@ -123,12 +125,6 @@ static void player_disp(int width,int height){
 
     gluLookAt(10.0, 10.0, 10.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 
-    glDisable(GL_LIGHTING);
-    coordinate_axis(20.0);  // 座標軸を表示
-    lines(20,0.5);          // XZ平面の目盛りを表示
-    direction(4.0,1.0);     // 座標軸の方向を表示
-    glEnable(GL_LIGHTING);
-
     double rad = frame_count / 10.0;
 
     glPushMatrix();
@@ -141,36 +137,53 @@ static void player_disp(int width,int height){
 
 }
 
+// 開発者モードで呼び出される描画関数
 static void developper_disp(void){
+    // 左半分に描画するよう設定
     glViewport(viewport_start_x, viewport_start_y,
                 viewport_width/2, viewport_height);
     player_disp(viewport_width/2,viewport_height);
 
+    // 右半分に描画するように設定
     glViewport(viewport_start_x+viewport_width/2, viewport_start_y,
                 viewport_width/2, viewport_height);
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(40.0, (double)viewport_width/2 / (double)viewport_height, 1.0, 100.0);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    gluLookAt(10.0, 10.0, 10.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+    glDisable(GL_LIGHTING);
+    coordinate_axis(20.0);  // 座標軸を表示
+    lines(20,0.5);          // XZ平面の目盛りを表示
+    direction(4.0,1.0);     // 座標軸の方向を表示
+    glEnable(GL_LIGHTING);
     player_disp(viewport_width/2,viewport_height);
 
+
+    // 描画領域を全体に戻す
     glViewport(viewport_start_x, viewport_start_y,
                 viewport_width, viewport_height);
 }
 
+// ゲーム状態で呼び出される描画関数
 void game_disp(void){
 
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // 描画をクリア
 
-    if(DEVELOPPE_MODE == ON){
-        developper_disp();
-    }else{
-        player_disp(viewport_width,viewport_height);
+    if(DEVELOPPE_MODE == ON){       // 開発者モードなら
+        developper_disp();          // 開発者モードの描画関数を呼び出す
+    }else{                          // 開発者モードでないなら
+        player_disp(viewport_width,viewport_height);    // プレイヤー向けの描画関数を呼び出す
     }
-    
-    glutSwapBuffers();
+
+    glutSwapBuffers();              // 描画を更新
 }
 
 void game_keyboard(unsigned char key, int x, int y){
-    if(key == 'e') state = MENU;
     switch(key){
-        case 'e':
+        case 'm':
             game_exit();
             if(DEVELOPPE_MODE == ON){
                 printf("developper mode off.\n");
@@ -189,6 +202,21 @@ void game_keyboard(unsigned char key, int x, int y){
             }
     }
 }
+
+void game_special(int key, int x, int y){
+    switch(key){
+        case GLUT_KEY_LEFT:
+            game_exit();
+            if(DEVELOPPE_MODE == ON){
+                printf("developper mode off.\n");
+                DEVELOPPE_MODE = OFF;
+            }
+            GAME_INIT_FLAG = UNFINISHED;
+            state = MENU;
+            break;
+    }
+}
+
 
 void game_mouse(int button, int mouse_state, int x, int y){
 

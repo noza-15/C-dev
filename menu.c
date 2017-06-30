@@ -1,4 +1,5 @@
 #include <GL/glut.h>
+#include <stdlib.h>
 #include "global.h"
 #include "menu.h"
 
@@ -16,6 +17,14 @@ STATE state;
 
 static int MENU_INIT_FLAG = UNFINISHED;
 
+typedef enum{
+    selectGAME,
+    selectSCORE,
+    selectQUIT
+}CURSOR;
+
+static CURSOR cursor = selectGAME;
+
 // ゲーム開始時に実行する
 static void menu_init(void){
     printf("now menu initialize.\n");
@@ -26,27 +35,23 @@ static void menu_exit(void){
     printf("now menu exit.\n");
 }
 
-static void DrawString(char* str, int w, int h, int x0, int y0){
+static void printString(char* str, int x0, int y0){
     glDisable(GL_LIGHTING);
     // 平行投影にする
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();
     glLoadIdentity();
-    gluOrtho2D(0, w, h, 0);
+    gluOrtho2D(0, viewport_width, viewport_height, 0);
+
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     glLoadIdentity();
 
     // 画面上にテキスト描画
-    glColor3d(1.0,0.0,0.0);
     glRasterPos2f(x0, y0);
-    int i = 0;
-    while(str[i]!='\0')i++;
-    int size = i;
-    for(i = 0; i < size; i++){
-        char ic = str[i];
-        glutBitmapCharacter(GLUT_BITMAP_9_BY_15, ic);
-    }
+    int length = 0; while(str[length]!='\0')length++;
+    int i;
+    for(i=0;i<length;i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, str[i]);
 
     glPopMatrix();
     glMatrixMode(GL_PROJECTION);
@@ -68,15 +73,24 @@ void menu_disp(void){
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-
-    DrawString("start",1280,720,20,20);
-    DrawString("press g key : to start",1280,720,20,50);
-
+    glColor3d(1.0,1.0,1.0);
+    printString("menu",620,300);
+    if(cursor == selectGAME)    glColor3d(0.9,0.9,0.4);
+    else                        glColor3d(0.4,0.4,0.4);
+    printString("game start : press g key",630,320);
+    if(cursor == selectSCORE)   glColor3d(0.9,0.9,0.4);
+    else                        glColor3d(0.4,0.4,0.4);
+    printString("score ranking : press s key",630,340);
+    if(cursor == selectQUIT)    glColor3d(0.9,0.9,0.4);
+    else                        glColor3d(0.4,0.4,0.4);
+    printString("quit : press q key",630,360);
 
     glutSwapBuffers();
 }
 
 void menu_keyboard(unsigned char key, int x, int y){
+
+    printf("%d\n",key);
 
     switch(key){
         case 'g':
@@ -90,6 +104,36 @@ void menu_keyboard(unsigned char key, int x, int y){
             state = SCORE;
             break;
         default :
+            break;
+    }
+}
+
+void menu_special(int key, int x, int y){
+    switch(key){
+        case GLUT_KEY_UP:
+            if(cursor == selectGAME) cursor = selectQUIT;
+            else cursor--;
+            break;
+        case GLUT_KEY_DOWN:
+            if(cursor == selectQUIT) cursor = selectGAME;
+            else cursor++;
+            break;
+        case GLUT_KEY_RIGHT:
+            switch(cursor){
+                case selectGAME:
+                    menu_exit();
+                    MENU_INIT_FLAG = UNFINISHED;
+                    state = GAME;
+                    break;
+                case selectSCORE:
+                    menu_exit();
+                    MENU_INIT_FLAG = UNFINISHED;
+                    state = SCORE;
+                    break;
+                case selectQUIT:
+                    exit(0);
+                    break;
+            }
             break;
     }
 }
