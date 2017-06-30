@@ -1,0 +1,26 @@
+#ifndef _GLOBAL_H_
+#define _GLOBAL_H_
+
+typedef enum{
+    MENU,
+    GAME,
+    SCORE
+}STATE;
+
+extern STATE state;
+
+extern int window_width;
+extern int window_height;
+extern int viewport_start_x;
+extern int viewport_start_y;
+extern int viewport_width;
+extern int viewport_height;
+extern int frame_count;
+
+#define FINISHED   0
+#define UNFINISHED 1
+
+#define OFF 0
+#define ON  1
+
+#endif // _GLOBAL_H_
