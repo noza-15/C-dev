@@ -111,7 +111,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\..\Sync waseda\5_Cアプリケーションデベロップメント\kadai\report.c" />
+    <ClCompile Include="..\..\..\..\..\Sync waseda\5_Cアプリケーションデベロップメント\kadai\main.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

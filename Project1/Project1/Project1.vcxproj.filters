@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\..\Sync waseda\5_Cアプリケーションデベロップメント\kadai\report.c">
+    <ClCompile Include="..\..\..\..\..\Sync waseda\5_Cアプリケーションデベロップメント\kadai\main.c">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
