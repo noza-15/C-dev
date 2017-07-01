@@ -34,6 +34,9 @@ static double camera_px;
 static double camera_py;
 static double camera_pz;
 
+static int game_over_flag;
+
+
 // 画面に文字列を表示する関数
 static void printString(char* str, int x0, int y0){
     glDisable(GL_LIGHTING);
@@ -104,6 +107,7 @@ static void game_init(void){
     camera_py = 0.0;
     camera_pz = -1.0;
 
+    game_over_flag = OFF;
 }
 
 // ゲームを終わる時に実行する
@@ -114,6 +118,7 @@ static void game_exit(void){
 
 // 座標軸を描画する関数
 static void coordinate_axis(double length){
+    glDisable(GL_LIGHTING);
     glPushMatrix();
 
     glColor3d(1.0, 0.0, 0.0);
@@ -135,10 +140,12 @@ static void coordinate_axis(double length){
     glEnd();
 
     glPopMatrix();
+    glEnable(GL_LIGHTING);
 }
 
 // 座標軸方向を表示する
 static void direction(double position,double scale){
+    glDisable(GL_LIGHTING);
     glPushMatrix();
 
     glPushMatrix();
@@ -162,10 +169,12 @@ static void direction(double position,double scale){
     glPopMatrix();
 
     glPopMatrix();
+    glEnable(GL_LIGHTING);
 }
 
 // XZ平面上に目盛りを追加する関数
-static void lines(int max, double interval){
+static void zx_lines(int max, double interval){
+    glDisable(GL_LIGHTING);
     glPushMatrix();
 
     int i;
@@ -189,10 +198,12 @@ static void lines(int max, double interval){
     glEnd();
 
     glPopMatrix();
+    glEnable(GL_LIGHTING);
 }
 
 // XY平面上に目盛りを追加する関数
-static void xylines(int max, double interval){
+static void xy_lines(int max, double interval){
+    glDisable(GL_LIGHTING);
     glPushMatrix();
 
     int i;
@@ -216,37 +227,55 @@ static void xylines(int max, double interval){
     glEnd();
 
     glPopMatrix();
+    glEnable(GL_LIGHTING);
+}
+
+// プレイヤーのカメラ変換行列をかける関数()
+static void setPlayerCam(void){
+    glMatrixMode(GL_MODELVIEW);     // モデルビュー行列モードにする
+    glLoadIdentity();               // 単位行列をロード
+    gluLookAt(0.0, 0.0, 20.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+}
+
+// 開発者用のカメラ変換行列をかける関数
+static void setDevCam(void){
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    gluLookAt(camera_x, camera_y, camera_z,
+                camera_x+camera_px, camera_y+camera_py, camera_z+camera_pz, 0.0, 1.0, 0.0);
+}
+
+// プレイヤーを描画する関数
+static void render_player(void){
+
+    double rad = frame_count / 5.0;
+    double z = play_pos(0);         // プレイヤーのz座標を取得
+
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();                 // 現在の変換行列を記憶
+    glTranslatef(0.0, z, 0.0);      // 平行移動の行列をかける
+    glRotated(0.0, 1.0, 0.0, 0.0);  // x軸回転行列をかける
+    glRotated(rad, 0.0, 1.0, 0.0);  // y軸回転行列をかける
+    glRotated(0.0, 0.0, 0.0, 1.0);  // z軸回転行列をかける
+    glutSolidCube(1);               // モデルの描画
+    glPopMatrix();                  // 変換行列を記憶した行列に戻す
+
+}
+
+// 画面サイズに合わせてカメラのアスペクト比を決める
+static void adjust_aspect(int width, int height){
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(40.0, (double)width / (double)height, 1.0, 100.0);
+    glMatrixMode(GL_MODELVIEW);
 }
 
 // プレイヤー向け描画関数
 static void player_disp(int width,int height){
 
-    if(GAME_INIT_FLAG == UNFINISHED){
-        game_init();
-        GAME_INIT_FLAG = FINISHED;
-    }
-
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluPerspective(40.0, (double)width / (double)height, 1.0, 100.0);
-
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    gluLookAt(0.0, 0.0, 20.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
-    //gluLookAt(10.0, 10.0, 10.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
-
-    double rad = frame_count / 10.0;
-
-    double z = play_pos(0);
-
-    glPushMatrix();
-    //glTranslatef(3.0*cos(rad), z, 3.0*sin(rad));
-    glTranslatef(0.0, z, 0.0);
-    glRotated(0.0, 1.0, 0.0, 0.0);
-    glRotated(rad, 0.0, 1.0, 0.0);
-    glRotated(0.0, 0.0, 0.0, 1.0);
-    glutSolidCube(1);
-    glPopMatrix();
+    adjust_aspect(width,height);
+    setPlayerCam();                 // カメラ変換行列をかける
+    render_player();
 
 }
 
@@ -257,50 +286,24 @@ static void developper_disp(void){
                 viewport_width/2, viewport_height);
     player_disp(viewport_width/2,viewport_height);
 
-
     // 右上に軸付きのプレイ画面を表示
     glViewport(viewport_start_x+viewport_width/2, viewport_start_y+viewport_height/2,
                 viewport_width/2, viewport_height/2);
-
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluPerspective(40.0, (viewport_width/2.0) / (viewport_height/2.0), 1.0, 100.0);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    gluLookAt(0.0, 0.0, 20.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
-    glDisable(GL_LIGHTING);
+    adjust_aspect(viewport_width/2, viewport_height/2);
+    setPlayerCam();
     coordinate_axis(20.0);  // 座標軸を表示
-    xylines(20,0.5);
-    glEnable(GL_LIGHTING);
+    xy_lines(20,0.5);
     player_disp(viewport_width/2,viewport_height/2);
 
     // 右下に描画するように設定
     glViewport(viewport_start_x+viewport_width/2, viewport_start_y,
                 viewport_width/2, viewport_height/2);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluPerspective(40.0, (viewport_width/2.0) / (viewport_height/2.0), 1.0, 100.0);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    gluLookAt(camera_x, camera_y, camera_z,
-                camera_x+camera_px, camera_y+camera_py, camera_z+camera_pz, 0.0, 1.0, 0.0);
-    glDisable(GL_LIGHTING);
+    adjust_aspect(viewport_width/2, viewport_height/2);
+    setDevCam();
     coordinate_axis(20.0);  // 座標軸を表示
-    lines(20,0.5);          // XZ平面の目盛りを表示
+    zx_lines(20,0.5);          // XZ平面の目盛りを表示
     direction(4.0,1.0);     // 座標軸の方向を表示
-    glEnable(GL_LIGHTING);
-
-    // プレイヤーの表示
-    double rad = frame_count / 10.0;
-    double z = play_pos(0);
-    glPushMatrix();
-    glTranslatef(0.0, z, 0.0);
-    glRotated(0.0, 1.0, 0.0, 0.0);
-    glRotated(rad, 0.0, 1.0, 0.0);
-    glRotated(0.0, 0.0, 0.0, 1.0);
-    glutSolidCube(1);
-    glPopMatrix();
-
+    render_player(); // プレイヤーの表示
 
     // 描画領域を全体に戻す
     glViewport(viewport_start_x, viewport_start_y,
@@ -310,12 +313,19 @@ static void developper_disp(void){
 // ゲーム状態で呼び出される描画関数
 void game_disp(void){
 
+    if(GAME_INIT_FLAG == UNFINISHED){
+        game_init();
+        GAME_INIT_FLAG = FINISHED;
+    }
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // 描画をクリア
 
     if(DEVELOPPE_MODE == ON){       // 開発者モードなら
         developper_disp();          // 開発者モードの描画関数を呼び出す
-    }else{                          // 開発者モードでないなら
+    }else if(game_over_flag == OFF){                          // 開発者モードでないなら
         player_disp(viewport_width,viewport_height);    // プレイヤー向けの描画関数を呼び出す
+    }else{
+        player_disp(viewport_width,viewport_height);
     }
 
     glDisable(GL_LIGHTING);
