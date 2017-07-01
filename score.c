@@ -20,22 +20,26 @@ static int SCORE_INIT_FLAG = UNFINISHED;
 // ゲーム開始時に実行する
 static void score_init(void){
     printf("now score initialize.\n");
-    glClearColor(0.8,0.3,0.3,1.0);
+    //glClearColor(0.8,0.3,0.3,1.0);
 }
 
 // ゲームを終わる時に実行する
 static void score_exit(void){
     printf("now score exit.\n");
-    glClearColor(0.0,0.0,0.0,1.0);
+    //glClearColor(0.0,0.0,0.0,1.0);
 }
 
 void score_disp(void){
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // 描画をクリア
+    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // 描画をクリア
 
     if(SCORE_INIT_FLAG == UNFINISHED){
         score_init();
         SCORE_INIT_FLAG = FINISHED;
     }
+
+    glViewport(viewport_start_x,viewport_start_y,viewport_width,viewport_height);
+    glClearColor(0.8,0.3,0.3,1.0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glutSwapBuffers();
 }

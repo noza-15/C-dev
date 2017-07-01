@@ -75,6 +75,8 @@ void menu_disp(void){
         MENU_INIT_FLAG = FINISHED;
     }
 
+    glViewport(viewport_start_x,viewport_start_y,viewport_width,viewport_height);
+
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     gluPerspective(40.0, (double)viewport_width / (double)viewport_height, 1.0, 100.0);

@@ -34,7 +34,6 @@ void mouse(int, int, int, int);
 void init(void);
 
 
-
 // 固定フレームレートで実行する関数
 void timer(int value){
     frame_count++;
@@ -45,6 +44,7 @@ void timer(int value){
 
 // 描画関数
 void display(void){
+    glClearColor(0.0,0.0,0.0,1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     switch(state){
@@ -62,27 +62,20 @@ void display(void){
 
 // ウィンドウサイズが変わった時に呼び出される関数
 void reshape(int width, int height){
-    window_width    = width;
-    window_height   = height;
-    viewport_width  = width;
-    viewport_height = height;
-    glViewport(0,0,width,height);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+        window_width    = width;
+        window_height   = height;
+        viewport_width  = width;
+        viewport_height = height;
     if((double)width > (double)height * 16.0 / 9.0){        // 横幅が大きすぎたら
         viewport_start_x = width/2-(int)(height*8.0/9.0);
         viewport_start_y = 0;
         viewport_width = (int)(height * 16.0 / 9.0);
         viewport_height = height;
-        glViewport(viewport_start_x, viewport_start_y,
-                    viewport_width, viewport_height);
     }else if((double)height > (double)width * 3.0 / 4.0){   // 縦幅が大きすぎたら
         viewport_start_x = 0;
         viewport_start_y = height/2-(int)(width*1.5/4.0);
         viewport_width = width;
         viewport_height = (int)(width * 3.0 / 4.0);
-        glViewport(viewport_start_x, viewport_start_y,
-                    viewport_width, viewport_height);
     }
 }
 
@@ -137,8 +130,6 @@ void mouse(int button, int mouse_state, int x, int y){
 
 // 初期化関数
 void init(void){
-    glClearColor(0.0, 0.0, 0.0, 1.0);   // 画面初期化の色は黒
-
     glEnable(GL_DEPTH_TEST);            // 深度判定を行う
 
     glEnable(GL_CULL_FACE);             // 裏面除去を使う

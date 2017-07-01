@@ -4,6 +4,7 @@
 #include "game.h"
 #include "player.h"
 #include "obstacle.h"
+#include "background.h"
 
 #include <stdio.h> // debug
 
@@ -70,6 +71,8 @@ static void printString(char* str, int x0, int y0){
 static void game_init(void){
     glEnable(GL_LIGHTING);
     playerInit();
+    initObstacles();
+    backgroundInit();
 
     camera_x = 0.0;
     camera_y = 0.0;
@@ -80,13 +83,15 @@ static void game_init(void){
 
     game_over_flag = OFF;
 
-    initObstacles();
 }
 
 // ゲームを終わる時に実行する
 static void game_exit(void){
     printf("now game exit.\n");
 }
+
+
+// debug ///////////////////////////////////////////////////////////////////////
 
 // 座標軸を描画する関数
 static void coordinate_axis(double length){
@@ -202,6 +207,8 @@ static void xy_lines(int max, double interval){
     glEnable(GL_LIGHTING);
 }
 
+////////////////////////////////////////////////////////////////////////////////
+
 // プレイヤーのカメラ変換行列をかける関数()
 static void setPlayerCam(void){
     glMatrixMode(GL_MODELVIEW);     // モデルビュー行列モードにする
@@ -217,23 +224,6 @@ static void setDevCam(void){
                 camera_x+camera_px, camera_y+camera_py, camera_z+camera_pz, 0.0, 1.0, 0.0);
 }
 
-// プレイヤーを描画する関数
-static void render_player(void){
-
-    double rad = frame_count / 5.0;
-    double z = getPlayerPosition();         // プレイヤーのz座標を取得
-
-    glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();                 // 現在の変換行列を記憶
-    glTranslatef(0.0, z, 0.0);      // 平行移動の行列をかける
-    glRotated(0.0, 1.0, 0.0, 0.0);  // x軸回転行列をかける
-    glRotated(rad, 0.0, 1.0, 0.0);  // y軸回転行列をかける
-    glRotated(0.0, 0.0, 0.0, 1.0);  // z軸回転行列をかける
-    glutSolidCube(1);               // モデルの描画
-    glPopMatrix();                  // 変換行列を記憶した行列に戻す
-
-}
-
 // 画面サイズに合わせてカメラのアスペクト比を決める
 static void adjust_aspect(int width, int height){
     glMatrixMode(GL_PROJECTION);
@@ -242,13 +232,14 @@ static void adjust_aspect(int width, int height){
     glMatrixMode(GL_MODELVIEW);
 }
 
-// プレイヤー向け描画関数
+// ワールドの全てを描画する関数
 static void renderAll(int width,int height){
 
     adjust_aspect(width,height);
     setPlayerCam();                 // カメラ変換行列をかける
     render_player();
     renderObstacles();
+    backgroundRender();
 }
 
 // ゲームオーバー画面の描画
@@ -265,8 +256,6 @@ void game_disp(void){
     }
 
     game_refresh();                 // ゲームの内部状態を更新
-
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // 描画をクリア
 
     if(DEVELOPPE_MODE == ON){       // 開発者モードなら
         // 左半分に描画するよう設定
@@ -293,13 +282,13 @@ void game_disp(void){
         direction(4.0,1.0);     // 座標軸の方向を表示
         renderAll(viewport_width/2,viewport_height);
 
-        // 描画領域を全体に戻す
+    }else if(game_over_flag == OFF){                          // 開発者モードでないなら
         glViewport(viewport_start_x, viewport_start_y,
                     viewport_width, viewport_height);
-
-    }else if(game_over_flag == OFF){                          // 開発者モードでないなら
         renderAll(viewport_width,viewport_height);    // プレイヤー向けの描画関数を呼び出す
     }else{
+        glViewport(viewport_start_x, viewport_start_y,
+                    viewport_width, viewport_height);
         over_disp();
     }
 

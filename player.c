@@ -1,3 +1,4 @@
+#include <GL/glut.h>
 #include "global.h"
 #include "player.h"
 
@@ -52,4 +53,21 @@ double getPlayerPosition(void){
     if(z< -20.0)z = -20.0;
 
     return z;
+}
+
+// プレイヤーを描画する関数
+void render_player(void){
+
+    double rad = frame_count / 5.0;
+    double z = getPlayerPosition();         // プレイヤーのz座標を取得
+
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();                 // 現在の変換行列を記憶
+    glTranslatef(0.0, z, 0.0);      // 平行移動の行列をかける
+    glRotated(0.0, 1.0, 0.0, 0.0);  // x軸回転行列をかける
+    glRotated(rad, 0.0, 1.0, 0.0);  // y軸回転行列をかける
+    glRotated(0.0, 0.0, 0.0, 1.0);  // z軸回転行列をかける
+    glutSolidCube(1);               // モデルの描画
+    glPopMatrix();                  // 変換行列を記憶した行列に戻す
+
 }
