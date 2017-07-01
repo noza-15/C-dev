@@ -2,6 +2,7 @@
 #include <math.h>
 #include "global.h"
 #include "game.h"
+#include "player.h"
 
 #include <stdio.h> // debug
 
@@ -22,13 +23,6 @@ STATE state;
 
 static int GAME_INIT_FLAG = UNFINISHED; // game state
 static int DEVELOPPE_MODE = OFF;        // game state
-
-static int jumped_frame = -1;          // player object
-static double jump_v    = 0;        // player object
-static double jump_z    = 0;        // player object
-
-#define GRAVITY    17.0             // player object
-#define JUMP_POWER 13.0             // player object
 
 static double camera_x;             // devlopper camera
 static double camera_y;             // devlopper camera
@@ -65,50 +59,12 @@ static void printString(char* str, int x0, int y0){
     glMatrixMode(GL_MODELVIEW);
 }
 
-// 前回のジャンプからの経過時間 player object
-static double getJumpTime(void){
-    if(frame_count > jumped_frame)
-        return (frame_count-jumped_frame) * refresh_msec / 1000.0;
-    else
-        return (frame_count-jumped_frame + MAX_FRAME) * refresh_msec / 1000.0;
-}
-
-// ジャンプした時 player object interface
-static void jump(void){
-    double second = getJumpTime();
-    if(jumped_frame<0){ // 初めてのジャンプなら
-        jump_z = 0.0;
-        jump_v = JUMP_POWER;
-    }else{              // n度めのジャンプなら
-        jump_z = jump_z + jump_v*second - GRAVITY/2.0*second*second;
-        jump_v = jump_v - GRAVITY*second + JUMP_POWER;
-    }
-    jumped_frame = frame_count;
-}
-
-// プレイヤーの位置を決める関数 player object
-static double getPlayerPosition(void){
-    // 前回のジャンプからの経過時間を計算
-    double second = getJumpTime();
-
-    double z;
-    if(jumped_frame < 0)   z = 0.0;                             // まだジャンプしたことないなら0
-    else                    z = jump_z + jump_v*second - GRAVITY/2.0*second*second;   // ジャンプしたことあるなら
-
-    if(z>20.0)z = 20.0;
-    if(z< -20.0)z = -20.0;
-
-    return z;
-}
-
 // ゲーム開始時に実行する
 static void game_init(void){
     printf("now game initialize.\n");
     glEnable(GL_LIGHTING);
-    jumped_frame = -1;          // player object
-    jump_v    = 0;              // player object
-    jump_z    = 0;              // player object
-
+    playerInit();
+    
     camera_x = 0.0;
     camera_y = 0.0;
     camera_z = 20.0;
