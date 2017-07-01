@@ -19,8 +19,7 @@ int viewport_start_y;
 int viewport_width;
 int viewport_height;
 int frame_count;
-
-unsigned int refresh_msec = 20;
+unsigned int refresh_msec;
 
 STATE state;
 
@@ -39,7 +38,7 @@ void init(void);
 // 固定フレームレートで実行する関数
 void timer(int value){
     frame_count++;
-    if(frame_count > 100000000) frame_count = 0;
+    if(frame_count > MAX_FRAME) frame_count = 0;
     glutPostRedisplay();                    // 描画関数の呼び出し
     glutTimerFunc(refresh_msec,timer,0);    // refresh_msec後にもう一度この関数を呼び出す
 }
@@ -150,6 +149,7 @@ void init(void){
 
     window_width = INITIAL_WIDTH;
     window_height = INITIAL_HHEIGHT;
+    refresh_msec = INITIAL_MSEC;
     state = MENU;
 }
 

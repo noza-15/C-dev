@@ -14,27 +14,30 @@ int viewport_start_y;
 int viewport_width;
 int viewport_height;
 int frame_count;
+unsigned int refresh_msec;
 
 STATE state;
 
 ////////////////////////////////////////////////////////////////////////////////
 
-static int GAME_INIT_FLAG = UNFINISHED;
-static int DEVELOPPE_MODE = OFF;
+static int GAME_INIT_FLAG = UNFINISHED; // game state
+static int DEVELOPPE_MODE = OFF;        // game state
 
-static int jump_time = -1;
-static int jump_f    = 0;
-static double jump_v    = 0;
-static double jump_z    = 0;
+static int jumped_frame = -1;          // player object
+static double jump_v    = 0;        // player object
+static double jump_z    = 0;        // player object
 
-static double camera_x;
-static double camera_y;
-static double camera_z;
-static double camera_px;
-static double camera_py;
-static double camera_pz;
+#define GRAVITY    17.0             // player object
+#define JUMP_POWER 13.0             // player object
 
-static int game_over_flag;
+static double camera_x;             // devlopper camera
+static double camera_y;             // devlopper camera
+static double camera_z;             // devlopper camera
+static double camera_px;            // devlopper camera
+static double camera_py;            // devlopper camera
+static double camera_pz;            // devlopper camera
+
+static int game_over_flag;          // game system
 
 
 // 画面に文字列を表示する関数
@@ -62,27 +65,35 @@ static void printString(char* str, int x0, int y0){
     glMatrixMode(GL_MODELVIEW);
 }
 
-// プレイヤーの位置を決める関数
-static double play_pos(int flag){
-    double g = 17.0;
-    double jump = 13.0;
+// 前回のジャンプからの経過時間 player object
+static double getJumpTime(void){
+    if(frame_count > jumped_frame)
+        return (frame_count-jumped_frame) * refresh_msec / 1000.0;
+    else
+        return (frame_count-jumped_frame + MAX_FRAME) * refresh_msec / 1000.0;
+}
+
+// ジャンプした時 player object interface
+static void jump(void){
+    double second = getJumpTime();
+    if(jumped_frame<0){ // 初めてのジャンプなら
+        jump_z = 0.0;
+        jump_v = JUMP_POWER;
+    }else{              // n度めのジャンプなら
+        jump_z = jump_z + jump_v*second - GRAVITY/2.0*second*second;
+        jump_v = jump_v - GRAVITY*second + JUMP_POWER;
+    }
+    jumped_frame = frame_count;
+}
+
+// プレイヤーの位置を決める関数 player object
+static double getPlayerPosition(void){
+    // 前回のジャンプからの経過時間を計算
+    double second = getJumpTime();
 
     double z;
-
-    double second = (frame_count-jump_time)/50.0;
-
-    if(flag == 1){
-        if(jump_time<0){
-            jump_z = 0.0;
-            jump_v = jump;
-        }else{
-            jump_z = jump_z + jump_v*second - g/2.0*second*second;
-            jump_v = jump_v - g*second + jump;
-        }
-        jump_time = frame_count;
-    }
-    if(jump_time < 0)   z = 0.0;
-    else                z = jump_z + jump_v*second - g/2.0*second*second;
+    if(jumped_frame < 0)   z = 0.0;                             // まだジャンプしたことないなら0
+    else                    z = jump_z + jump_v*second - GRAVITY/2.0*second*second;   // ジャンプしたことあるなら
 
     if(z>20.0)z = 20.0;
     if(z< -20.0)z = -20.0;
@@ -94,11 +105,9 @@ static double play_pos(int flag){
 static void game_init(void){
     printf("now game initialize.\n");
     glEnable(GL_LIGHTING);
-    jump_time = -1;
-    jump_time = -1;
-    jump_f    = 0;
-    jump_v    = 0;
-    jump_z    = 0;
+    jumped_frame = -1;          // player object
+    jump_v    = 0;              // player object
+    jump_z    = 0;              // player object
 
     camera_x = 0.0;
     camera_y = 0.0;
@@ -113,7 +122,6 @@ static void game_init(void){
 // ゲームを終わる時に実行する
 static void game_exit(void){
     printf("now game exit.\n");
-    jump_time = -1;
 }
 
 // 座標軸を描画する関数
@@ -249,7 +257,7 @@ static void setDevCam(void){
 static void render_player(void){
 
     double rad = frame_count / 5.0;
-    double z = play_pos(0);         // プレイヤーのz座標を取得
+    double z = getPlayerPosition();         // プレイヤーのz座標を取得
 
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();                 // 現在の変換行列を記憶
@@ -372,7 +380,7 @@ void game_keyboard(unsigned char key, int x, int y){
 void game_special(int key, int x, int y){
     switch(key){
         case GLUT_KEY_UP:
-            play_pos(1);
+            jump();
             break;
         case GLUT_KEY_LEFT:
             game_exit();
