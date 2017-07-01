@@ -78,7 +78,7 @@ void renderObstacles(void){
 // 全ての障害物と衝突していないか判定する関数
 int judgeCollision(double z){
     int i;
-    for(i=residentList_start;i<=residentList_end;i++){
+    for(i=residentList_start;i<residentList_end;i++){
         resident obj = residentList[i];
         if(ObstacleDefenition[obj.key].judge(obj.birth,obj.param,z)){
             return 1;

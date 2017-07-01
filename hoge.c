@@ -37,6 +37,8 @@ static void hoge_render(int birth, double* param){
 }
 
 static int hoge_judge(int birth, double* param, double z){
+    double y = 15.0-(double)(frame_count-birth)*0.3;
+    if(y<0.5 && y>-0.5 && z>2.5 && z<3.5)return 1;
     return 0;
 }
 

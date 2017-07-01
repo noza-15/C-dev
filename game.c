@@ -40,6 +40,8 @@ static int game_over_flag;          // game system
 // 各フレームごとにゲームの状態を更新する関数
 static void game_refresh(void){
     refreshResidents();
+    double z = getPlayerPosition();
+    if(judgeCollision(z))game_over_flag = ON;
 }
 
 // 画面に文字列を表示する関数
@@ -258,6 +260,11 @@ void game_disp(void){
     game_refresh();                 // ゲームの内部状態を更新
 
     if(DEVELOPPE_MODE == ON){       // 開発者モードなら
+        glDisable(GL_LIGHTING);
+        glColor3d(0.9,0.3,0.3);
+        printString("press x key to exit developper mode",30,30);
+        glEnable(GL_LIGHTING);
+
         // 左半分に描画するよう設定
         glViewport(viewport_start_x, viewport_start_y+viewport_height/2,
                     viewport_width/2, viewport_height/2);
@@ -283,6 +290,12 @@ void game_disp(void){
         renderAll(viewport_width/2,viewport_height);
 
     }else if(game_over_flag == OFF){                          // 開発者モードでないなら
+        glDisable(GL_LIGHTING);
+        glColor3d(0.9,0.3,0.3);
+        printString("press x key to developper mode",30,30);
+        printString("press UP key to start and jump",30,60);
+        glEnable(GL_LIGHTING);
+
         glViewport(viewport_start_x, viewport_start_y,
                     viewport_width, viewport_height);
         renderAll(viewport_width,viewport_height);    // プレイヤー向けの描画関数を呼び出す
@@ -291,12 +304,6 @@ void game_disp(void){
                     viewport_width, viewport_height);
         over_disp();
     }
-
-    glDisable(GL_LIGHTING);
-    glColor3d(0.9,0.3,0.3);
-    printString("press x key to developper mode",30,30);
-    printString("press UP key to start and jump",30,60);
-    glEnable(GL_LIGHTING);
 
     glutSwapBuffers();              // 描画を更新
 }
