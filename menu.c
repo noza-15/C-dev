@@ -1,10 +1,12 @@
+#include <stdlib.h> // 必ずglut.hより先にインクルードする(exit()の多重定義で怒られるので)
 #include <GL/glut.h>
-#include <stdlib.h>
 #include "global.h"
 #include "menu.h"
 
 #include <stdio.h> //debug
 
+
+// グローバル変数 ////////////////////////////////////////////////////////////////
 int window_width;
 int window_height;
 int viewport_start_x;
@@ -14,6 +16,8 @@ int viewport_height;
 int frame_count;
 
 STATE state;
+
+////////////////////////////////////////////////////////////////////////////////
 
 static int MENU_INIT_FLAG = UNFINISHED;
 
@@ -35,8 +39,10 @@ static void menu_exit(void){
     printf("now menu exit.\n");
 }
 
+// 画面に文字を描画する関数
 static void printString(char* str, int x0, int y0){
     glDisable(GL_LIGHTING);
+
     // 平行投影にする
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();
@@ -57,8 +63,11 @@ static void printString(char* str, int x0, int y0){
     glMatrixMode(GL_PROJECTION);
     glPopMatrix();
     glMatrixMode(GL_MODELVIEW);
+
+    glEnable(GL_LIGHTING);
 }
 
+// メニュー画面での描画関数
 void menu_disp(void){
 
     if(MENU_INIT_FLAG == UNFINISHED){
@@ -88,6 +97,7 @@ void menu_disp(void){
     glutSwapBuffers();
 }
 
+// メニュー画面でのキーボード受け取り
 void menu_keyboard(unsigned char key, int x, int y){
 
     printf("%d\n",key);
@@ -108,6 +118,7 @@ void menu_keyboard(unsigned char key, int x, int y){
     }
 }
 
+// メニュー画面での特殊キー受け取り
 void menu_special(int key, int x, int y){
     switch(key){
         case GLUT_KEY_UP:
@@ -138,6 +149,7 @@ void menu_special(int key, int x, int y){
     }
 }
 
+// メニュー画面でのマウス受け取り
 void menu_mouse(int button, int mouse_state, int x, int y){
 
 }

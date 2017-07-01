@@ -5,6 +5,8 @@
 
 #include <stdio.h> // debug
 
+// グローバル変数 ////////////////////////////////////////////////////////////////
+
 int window_width;
 int window_height;
 int viewport_start_x;
@@ -15,6 +17,8 @@ int frame_count;
 
 STATE state;
 
+////////////////////////////////////////////////////////////////////////////////
+
 static int GAME_INIT_FLAG = UNFINISHED;
 static int DEVELOPPE_MODE = OFF;
 
@@ -23,6 +27,14 @@ static int jump_f    = 0;
 static double jump_v    = 0;
 static double jump_z    = 0;
 
+static double camera_x;
+static double camera_y;
+static double camera_z;
+static double camera_px;
+static double camera_py;
+static double camera_pz;
+
+// 画面に文字列を表示する関数
 static void printString(char* str, int x0, int y0){
     glDisable(GL_LIGHTING);
     // 平行投影にする
@@ -47,6 +59,7 @@ static void printString(char* str, int x0, int y0){
     glMatrixMode(GL_MODELVIEW);
 }
 
+// プレイヤーの位置を決める関数
 static double play_pos(int flag){
     double g = 17.0;
     double jump = 13.0;
@@ -83,6 +96,14 @@ static void game_init(void){
     jump_f    = 0;
     jump_v    = 0;
     jump_z    = 0;
+
+    camera_x = 0.0;
+    camera_y = 0.0;
+    camera_z = 20.0;
+    camera_px = 0.0;
+    camera_py = 0.0;
+    camera_pz = -1.0;
+
 }
 
 // ゲームを終わる時に実行する
@@ -170,6 +191,33 @@ static void lines(int max, double interval){
     glPopMatrix();
 }
 
+// XY平面上に目盛りを追加する関数
+static void xylines(int max, double interval){
+    glPushMatrix();
+
+    int i;
+    double length = max * interval;
+
+    glColor3d(0.2,0.2,0.2);
+    glBegin(GL_LINES);
+    for(i=1;i<20;i++){
+        glVertex3d(i*interval,length,0);
+        glVertex3d(i*interval,-length,0);
+
+        glVertex3d(-i*interval,length,0);
+        glVertex3d(-i*interval,-length,0);
+
+        glVertex3d(length,i*interval,0);
+        glVertex3d(-length,i*interval,0);
+
+        glVertex3d(length,-i*interval,0);
+        glVertex3d(-length,-i*interval,0);
+    }
+    glEnd();
+
+    glPopMatrix();
+}
+
 // プレイヤー向け描画関数
 static void player_disp(int width,int height){
 
@@ -184,8 +232,8 @@ static void player_disp(int width,int height){
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-
-    gluLookAt(10.0, 10.0, 10.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+    gluLookAt(0.0, 0.0, 20.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+    //gluLookAt(10.0, 10.0, 10.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 
     double rad = frame_count / 10.0;
 
@@ -197,7 +245,7 @@ static void player_disp(int width,int height){
     glRotated(0.0, 1.0, 0.0, 0.0);
     glRotated(rad, 0.0, 1.0, 0.0);
     glRotated(0.0, 0.0, 0.0, 1.0);
-    glutSolidCube(2);
+    glutSolidCube(1);
     glPopMatrix();
 
 }
@@ -209,22 +257,49 @@ static void developper_disp(void){
                 viewport_width/2, viewport_height);
     player_disp(viewport_width/2,viewport_height);
 
-    // 右半分に描画するように設定
-    glViewport(viewport_start_x+viewport_width/2, viewport_start_y,
-                viewport_width/2, viewport_height);
+
+    // 右上に軸付きのプレイ画面を表示
+    glViewport(viewport_start_x+viewport_width/2, viewport_start_y+viewport_height/2,
+                viewport_width/2, viewport_height/2);
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(40.0, (double)viewport_width/2 / (double)viewport_height, 1.0, 100.0);
+    gluPerspective(40.0, (viewport_width/2.0) / (viewport_height/2.0), 1.0, 100.0);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    gluLookAt(10.0, 10.0, 10.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+    gluLookAt(0.0, 0.0, 20.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+    glDisable(GL_LIGHTING);
+    coordinate_axis(20.0);  // 座標軸を表示
+    xylines(20,0.5);
+    glEnable(GL_LIGHTING);
+    player_disp(viewport_width/2,viewport_height/2);
+
+    // 右下に描画するように設定
+    glViewport(viewport_start_x+viewport_width/2, viewport_start_y,
+                viewport_width/2, viewport_height/2);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(40.0, (viewport_width/2.0) / (viewport_height/2.0), 1.0, 100.0);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    gluLookAt(camera_x, camera_y, camera_z,
+                camera_x+camera_px, camera_y+camera_py, camera_z+camera_pz, 0.0, 1.0, 0.0);
     glDisable(GL_LIGHTING);
     coordinate_axis(20.0);  // 座標軸を表示
     lines(20,0.5);          // XZ平面の目盛りを表示
     direction(4.0,1.0);     // 座標軸の方向を表示
     glEnable(GL_LIGHTING);
-    player_disp(viewport_width/2,viewport_height);
+
+    // プレイヤーの表示
+    double rad = frame_count / 10.0;
+    double z = play_pos(0);
+    glPushMatrix();
+    glTranslatef(0.0, z, 0.0);
+    glRotated(0.0, 1.0, 0.0, 0.0);
+    glRotated(rad, 0.0, 1.0, 0.0);
+    glRotated(0.0, 0.0, 0.0, 1.0);
+    glutSolidCube(1);
+    glPopMatrix();
 
 
     // 描画領域を全体に戻す
@@ -245,13 +320,14 @@ void game_disp(void){
 
     glDisable(GL_LIGHTING);
     glColor3d(0.9,0.3,0.3);
-    printString("press d key to developper mode",30,30);
+    printString("press x key to developper mode",30,30);
     printString("press UP key to start and jump",30,60);
     glEnable(GL_LIGHTING);
 
     glutSwapBuffers();              // 描画を更新
 }
 
+// キーボードの入力で呼び出される関数
 void game_keyboard(unsigned char key, int x, int y){
     switch(key){
         case 'm':
@@ -263,7 +339,15 @@ void game_keyboard(unsigned char key, int x, int y){
             GAME_INIT_FLAG = UNFINISHED;
             state = MENU;
             break;
+        case 'w':
+            break;
+        case 'a':
+            break;
+        case 's':
+            break;
         case 'd':
+            break;
+        case 'x':
             if(DEVELOPPE_MODE == ON){
                 printf("developper mode off.\n");
                 DEVELOPPE_MODE = OFF;
@@ -274,6 +358,7 @@ void game_keyboard(unsigned char key, int x, int y){
     }
 }
 
+// 特殊なキーの入力で呼び出される関数
 void game_special(int key, int x, int y){
     switch(key){
         case GLUT_KEY_UP:
@@ -291,7 +376,7 @@ void game_special(int key, int x, int y){
     }
 }
 
-
+// マウスの入力で呼び出される関数
 void game_mouse(int button, int mouse_state, int x, int y){
 
 }

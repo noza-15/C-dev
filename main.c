@@ -106,6 +106,7 @@ void keyboard(unsigned char key, int x, int y){
     }
 }
 
+// 特殊なキーの入力があった時に呼び出される関数
 void special(int key, int x, int y){
     switch(state){
         case MENU:
