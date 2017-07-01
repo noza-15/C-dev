@@ -3,6 +3,7 @@
 #include "global.h"
 #include "game.h"
 #include "player.h"
+#include "obstacle.h"
 
 #include <stdio.h> // debug
 
@@ -19,7 +20,7 @@ unsigned int refresh_msec;
 
 STATE state;
 
-////////////////////////////////////////////////////////////////////////////////
+// game ////////////////////////////////////////////////////////////////////////
 
 static int GAME_INIT_FLAG = UNFINISHED; // game state
 static int DEVELOPPE_MODE = OFF;        // game state
@@ -32,133 +33,6 @@ static double camera_py;            // devlopper camera
 static double camera_pz;            // devlopper camera
 
 static int game_over_flag;          // game system
-
-
-////////////////////////////////////////////////////////////////////////////////
-
-// 障害物の定義の仕方
-typedef struct{
-    double* (*init)(void);              // -> パラメータ
-    void    (*render)(int,double*);     // 誕生秒,パラメータ
-    int     (*judge)(int,double*,double);  // 誕生秒,パラメータ,プレイヤー位置 -> 真偽
-    void    (*delete)(int,double*);     // 誕生秒,パラメータ
-} Obstacle;
-
-/* hoge.h */ //////////////////////////////////////////////////////////////////
-//Obstacle hoge;
-
-/* hoge.c */ ///////////////////////////////////////////////////////////////////
-#include <stdlib.h>
-double* hoge_init(void);              // -> パラメータ
-void    hoge_render(int,double*);     // 誕生秒,パラメータ
-int     hoge_judge(int,double*,double);  // 誕生秒,パラメータ,プレイヤー位置 -> 真偽
-void    hoge_delete(int,double*);     // 誕生秒,パラメータ
-
-double* hoge_init(void){
-    double* p;
-    p = malloc(sizeof(double)*3);
-    p[0] = 10.0;
-    p[1] = 15.0;
-    p[2] = 20.0;
-    return p;
-}
-
-void    hoge_render(int birth, double* param){
-
-}
-
-int     hoge_judge(int birth, double* param, double z){
-    return 0;
-}
-
-void    hoge_delete(int birth, double* param){
-
-}
-
-Obstacle get_hoge_definition(void){
-    // 実際の障害物定義の例
-    Obstacle hoge = {
-        hoge_init,
-        hoge_render,
-        hoge_judge,
-        hoge_delete
-    };
-    return hoge;
-}
-
-
-
-/* obstacle.c */ ///////////////////////////////////////////////////////////////
-
-#define OBSTACLE_NUMBER 4   // 全ての障害物の種類の数
-
-// 障害物定義リスト
-Obstacle *ObstacleDefenition;
-
-
-// 実際に存在するものの定義
-typedef struct{
-    int key;
-    double* param;
-    int birth;
-}resident;
-
-static resident *residentList;     // 存在する障害物のリスト
-static int residentList_start;
-static int residentList_end;
-
-#define MAX_RESIDENT 100    // 存在して良い障害物の上限
-
-// 確率的に障害物を発生して返す関数
-resident residentBirth(void){
-    //int i = rand();
-    int i = 1;
-    resident x;
-    x.key = i;
-    x.param = ObstacleDefenition[i].init();
-    x.birth = frame_count;
-    return x;
-}
-
-// 各フレームごとに実行する
-// 確率や条件的に障害物を発生させるかさせないかを決めて障害物リストを更新する関数
-// 消したり生成したり
-void refreshResidents(void){
-    if(frame_count>0){
-        residentList[2] = residentBirth();
-    }
-}
-
-// 全ての障害物を描画する
-void renderObstacles(void){
-    int i;
-    for(i=residentList_start;i<=residentList_end;i++){
-        resident obj = residentList[i];
-        ObstacleDefenition[obj.key].render(obj.birth,obj.param);
-    }
-}
-
-// 全ての障害物と衝突していないか判定する関数
-int judgeCollision(double z){
-    int i;
-    for(i=residentList_start;i<=residentList_end;i++){
-        resident obj = residentList[i];
-        if(ObstacleDefenition[obj.key].judge(obj.birth,obj.param,z)){
-            return 1;
-        }
-    }
-    return 0;
-}
-
-
-void initObstacles(void){
-    ObstacleDefenition = malloc(sizeof(Obstacle)*OBSTACLE_NUMBER);
-    int i;
-    for(i=0;i<OBSTACLE_NUMBER;i++){
-        ObstacleDefenition[i] = get_hoge_definition();
-    }
-    residentList = malloc(sizeof(resident)*100);
-}
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -369,43 +243,12 @@ static void adjust_aspect(int width, int height){
 }
 
 // プレイヤー向け描画関数
-static void player_disp(int width,int height){
+static void renderAll(int width,int height){
 
     adjust_aspect(width,height);
     setPlayerCam();                 // カメラ変換行列をかける
     render_player();
-    //render_objs();
-}
-
-// 開発者モードで呼び出される描画関数
-static void developper_disp(void){
-    // 左半分に描画するよう設定
-    glViewport(viewport_start_x, viewport_start_y,
-                viewport_width/2, viewport_height);
-    player_disp(viewport_width/2,viewport_height);
-
-    // 右上に軸付きのプレイ画面を表示
-    glViewport(viewport_start_x+viewport_width/2, viewport_start_y+viewport_height/2,
-                viewport_width/2, viewport_height/2);
-    adjust_aspect(viewport_width/2, viewport_height/2);
-    setPlayerCam();
-    coordinate_axis(20.0);  // 座標軸を表示
-    xy_lines(20,0.5);
-    player_disp(viewport_width/2,viewport_height/2);
-
-    // 右下に描画するように設定
-    glViewport(viewport_start_x+viewport_width/2, viewport_start_y,
-                viewport_width/2, viewport_height/2);
-    adjust_aspect(viewport_width/2, viewport_height/2);
-    setDevCam();
-    coordinate_axis(20.0);  // 座標軸を表示
-    zx_lines(20,0.5);          // XZ平面の目盛りを表示
-    direction(4.0,1.0);     // 座標軸の方向を表示
-    render_player(); // プレイヤーの表示
-
-    // 描画領域を全体に戻す
-    glViewport(viewport_start_x, viewport_start_y,
-                viewport_width, viewport_height);
+    renderObstacles();
 }
 
 // ゲームオーバー画面の描画
@@ -426,12 +269,38 @@ void game_disp(void){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // 描画をクリア
 
     if(DEVELOPPE_MODE == ON){       // 開発者モードなら
-        developper_disp();          // 開発者モードの描画関数を呼び出す
+        // 左半分に描画するよう設定
+        glViewport(viewport_start_x, viewport_start_y+viewport_height/2,
+                    viewport_width/2, viewport_height/2);
+        renderAll(viewport_width/2,viewport_height/2);
+
+        // 右上に軸付きのプレイ画面を表示
+        glViewport(viewport_start_x, viewport_start_y,
+                    viewport_width/2, viewport_height/2);
+        adjust_aspect(viewport_width/2, viewport_height/2);
+        setPlayerCam();
+        coordinate_axis(20.0);  // 座標軸を表示
+        xy_lines(20,0.5);
+        renderAll(viewport_width/2,viewport_height/2);
+
+        // 右下に描画するように設定
+        glViewport(viewport_start_x+viewport_width/2, viewport_start_y,
+                    viewport_width/2, viewport_height);
+        adjust_aspect(viewport_width/2, viewport_height);
+        setDevCam();
+        coordinate_axis(20.0);  // 座標軸を表示
+        zx_lines(20,0.5);          // XZ平面の目盛りを表示
+        direction(4.0,1.0);     // 座標軸の方向を表示
+        renderAll(viewport_width/2,viewport_height);
+
+        // 描画領域を全体に戻す
+        glViewport(viewport_start_x, viewport_start_y,
+                    viewport_width, viewport_height);
+
     }else if(game_over_flag == OFF){                          // 開発者モードでないなら
-        player_disp(viewport_width,viewport_height);    // プレイヤー向けの描画関数を呼び出す
+        renderAll(viewport_width,viewport_height);    // プレイヤー向けの描画関数を呼び出す
     }else{
         over_disp();
-        //player_disp(viewport_width,viewport_height);
     }
 
     glDisable(GL_LIGHTING);
