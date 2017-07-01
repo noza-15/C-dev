@@ -1,4 +1,4 @@
-#include <GL/glut.h>
+﻿#include <GL/glut.h>
 #include "global.h"
 #include "score.h"
 

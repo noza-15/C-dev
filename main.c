@@ -1,4 +1,4 @@
-#include <stdio.h>
+﻿#include <stdio.h>
 #include <stdlib.h>
 #include <GL/glut.h>
 
@@ -29,7 +29,7 @@ STATE state;
 void timer(int);
 void display(void);
 void reshape(int, int);
-void keyboard(unsigned char, int, int); // キーが入力された時のマウス座標
+void keyboard(unsigned char, int, int);
 void mouse(int, int, int, int);
 void init(void);
 

@@ -1,4 +1,4 @@
-#ifndef _SCORE_H_
+﻿#ifndef _SCORE_H_
 #define _SCORE_H_
 
 void score_disp(void);

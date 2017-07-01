@@ -1,4 +1,4 @@
-#ifndef _HOGE_H_
+﻿#ifndef _HOGE_H_
 #define _HOGE_H_
 
 //double* hoge_init(void);              // -> パラメータ

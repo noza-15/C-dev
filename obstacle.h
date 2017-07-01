@@ -1,4 +1,4 @@
-#ifndef _OBSTACLE_H_
+﻿#ifndef _OBSTACLE_H_
 #define _OBSTACLE_H_
 
 typedef struct{
