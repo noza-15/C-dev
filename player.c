@@ -19,6 +19,7 @@ static double getJumpTime(void){
         return (frame_count-jumped_frame + MAX_FRAME) * refresh_msec / 1000.0;
 }
 
+// プレイヤーの初期化
 void playerInit(void){
     jumped_frame = -1;          // player object
     jump_v    = 0;              // player object

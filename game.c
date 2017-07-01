@@ -34,6 +34,139 @@ static double camera_pz;            // devlopper camera
 static int game_over_flag;          // game system
 
 
+////////////////////////////////////////////////////////////////////////////////
+
+// 障害物の定義の仕方
+typedef struct{
+    double* (*init)(void);              // -> パラメータ
+    void    (*render)(int,double*);     // 誕生秒,パラメータ
+    int     (*judge)(int,double*,double);  // 誕生秒,パラメータ,プレイヤー位置 -> 真偽
+    void    (*delete)(int,double*);     // 誕生秒,パラメータ
+} Obstacle;
+
+/* hoge.h */ //////////////////////////////////////////////////////////////////
+//Obstacle hoge;
+
+/* hoge.c */ ///////////////////////////////////////////////////////////////////
+#include <stdlib.h>
+double* hoge_init(void);              // -> パラメータ
+void    hoge_render(int,double*);     // 誕生秒,パラメータ
+int     hoge_judge(int,double*,double);  // 誕生秒,パラメータ,プレイヤー位置 -> 真偽
+void    hoge_delete(int,double*);     // 誕生秒,パラメータ
+
+double* hoge_init(void){
+    double* p;
+    p = malloc(sizeof(double)*3);
+    p[0] = 10.0;
+    p[1] = 15.0;
+    p[2] = 20.0;
+    return p;
+}
+
+void    hoge_render(int birth, double* param){
+
+}
+
+int     hoge_judge(int birth, double* param, double z){
+    return 0;
+}
+
+void    hoge_delete(int birth, double* param){
+
+}
+
+Obstacle get_hoge_definition(void){
+    // 実際の障害物定義の例
+    Obstacle hoge = {
+        hoge_init,
+        hoge_render,
+        hoge_judge,
+        hoge_delete
+    };
+    return hoge;
+}
+
+
+
+/* obstacle.c */ ///////////////////////////////////////////////////////////////
+
+#define OBSTACLE_NUMBER 4   // 全ての障害物の種類の数
+
+// 障害物定義リスト
+Obstacle *ObstacleDefenition;
+
+
+// 実際に存在するものの定義
+typedef struct{
+    int key;
+    double* param;
+    int birth;
+}resident;
+
+static resident *residentList;     // 存在する障害物のリスト
+static int residentList_start;
+static int residentList_end;
+
+#define MAX_RESIDENT 100    // 存在して良い障害物の上限
+
+// 確率的に障害物を発生して返す関数
+resident residentBirth(void){
+    //int i = rand();
+    int i = 1;
+    resident x;
+    x.key = i;
+    x.param = ObstacleDefenition[i].init();
+    x.birth = frame_count;
+    return x;
+}
+
+// 各フレームごとに実行する
+// 確率や条件的に障害物を発生させるかさせないかを決めて障害物リストを更新する関数
+// 消したり生成したり
+void refreshResidents(void){
+    if(frame_count>0){
+        residentList[2] = residentBirth();
+    }
+}
+
+// 全ての障害物を描画する
+void renderObstacles(void){
+    int i;
+    for(i=residentList_start;i<=residentList_end;i++){
+        resident obj = residentList[i];
+        ObstacleDefenition[obj.key].render(obj.birth,obj.param);
+    }
+}
+
+// 全ての障害物と衝突していないか判定する関数
+int judgeCollision(double z){
+    int i;
+    for(i=residentList_start;i<=residentList_end;i++){
+        resident obj = residentList[i];
+        if(ObstacleDefenition[obj.key].judge(obj.birth,obj.param,z)){
+            return 1;
+        }
+    }
+    return 0;
+}
+
+
+void initObstacles(void){
+    ObstacleDefenition = malloc(sizeof(Obstacle)*OBSTACLE_NUMBER);
+    int i;
+    for(i=0;i<OBSTACLE_NUMBER;i++){
+        ObstacleDefenition[i] = get_hoge_definition();
+    }
+    residentList = malloc(sizeof(resident)*100);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+// 各フレームごとにゲームの状態を更新する関数
+static void game_refresh(void){
+    refreshResidents();
+}
+
 // 画面に文字列を表示する関数
 static void printString(char* str, int x0, int y0){
     glDisable(GL_LIGHTING);
@@ -61,10 +194,9 @@ static void printString(char* str, int x0, int y0){
 
 // ゲーム開始時に実行する
 static void game_init(void){
-    printf("now game initialize.\n");
     glEnable(GL_LIGHTING);
     playerInit();
-    
+
     camera_x = 0.0;
     camera_y = 0.0;
     camera_z = 20.0;
@@ -73,6 +205,8 @@ static void game_init(void){
     camera_pz = -1.0;
 
     game_over_flag = OFF;
+
+    initObstacles();
 }
 
 // ゲームを終わる時に実行する
@@ -240,7 +374,7 @@ static void player_disp(int width,int height){
     adjust_aspect(width,height);
     setPlayerCam();                 // カメラ変換行列をかける
     render_player();
-
+    //render_objs();
 }
 
 // 開発者モードで呼び出される描画関数
@@ -274,6 +408,11 @@ static void developper_disp(void){
                 viewport_width, viewport_height);
 }
 
+// ゲームオーバー画面の描画
+static void over_disp(void){
+    printString("game over",30,30);
+}
+
 // ゲーム状態で呼び出される描画関数
 void game_disp(void){
 
@@ -282,6 +421,8 @@ void game_disp(void){
         GAME_INIT_FLAG = FINISHED;
     }
 
+    game_refresh();                 // ゲームの内部状態を更新
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // 描画をクリア
 
     if(DEVELOPPE_MODE == ON){       // 開発者モードなら
@@ -289,7 +430,8 @@ void game_disp(void){
     }else if(game_over_flag == OFF){                          // 開発者モードでないなら
         player_disp(viewport_width,viewport_height);    // プレイヤー向けの描画関数を呼び出す
     }else{
-        player_disp(viewport_width,viewport_height);
+        over_disp();
+        //player_disp(viewport_width,viewport_height);
     }
 
     glDisable(GL_LIGHTING);
@@ -320,6 +462,9 @@ void game_keyboard(unsigned char key, int x, int y){
         case 's':
             break;
         case 'd':
+            break;
+        case 'o':
+            if(DEVELOPPE_MODE == ON) game_over_flag = ON;
             break;
         case 'x':
             if(DEVELOPPE_MODE == ON){
