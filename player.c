@@ -1,4 +1,4 @@
-
+﻿
 #include <GL/glut.h>
 #include "global.h"
 #include "player.h"
@@ -16,13 +16,6 @@ static double getJumpTime(void){
         return (frame_count-jumped_frame) * refresh_msec / 1000.0;
     else
         return (frame_count-jumped_frame + MAX_FRAME) * refresh_msec / 1000.0;
-}
-
-// プレイヤーの初期化
-void playerInit(void){
-    jumped_frame = -1;          // player object
-    jump_v    = 0;              // player object
-    jump_z    = 0;              // player object
 }
 
 // ジャンプした時 player object interface
@@ -53,8 +46,15 @@ double getPlayerPosition(void){
     return z;
 }
 
+// プレイヤーの初期化
+void initPlayer(void){
+    jumped_frame = -1;          // player object
+    jump_v    = 0;              // player object
+    jump_z    = 0;              // player object
+}
+
 // プレイヤーを描画する関数
-void render_player(void){
+void renderPlayer(void){
 
     double rad = frame_count / 5.0;
     double z = getPlayerPosition();         // プレイヤーのz座標を取得
@@ -67,5 +67,9 @@ void render_player(void){
     glRotated(0.0, 0.0, 0.0, 1.0);  // z軸回転行列をかける
     glutSolidCube(1);               // モデルの描画
     glPopMatrix();                  // 変換行列を記憶した行列に戻す
+
+}
+
+void endPlayer(void){
 
 }

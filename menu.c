@@ -1,4 +1,4 @@
-
+﻿
 #include <stdlib.h> // 必ずglut.hより先にインクルードする(exit()の多重定義で怒られるので)
 #include <GL/glut.h>
 #include "global.h"

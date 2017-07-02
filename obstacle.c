@@ -1,4 +1,4 @@
-
+﻿
 #include <stdlib.h>
 #include "global.h"
 #include "obstacle.h"
@@ -10,7 +10,7 @@
 #define OBSTACLE_NUMBER 4   // 全ての障害物の種類の数
 
 // 障害物定義リスト
-Obstacle *ObstacleDefenition;
+static Obstacle *ObstacleDefenition;
 
 // 実際に存在するものの定義
 typedef struct{
@@ -26,7 +26,7 @@ static int residentList_end;
 #define MAX_RESIDENT 100    // 存在して良い障害物の上限
 
 // 確率的に障害物を発生して返す関数
-resident residentBirth(void){
+static resident residentBirth(void){
     //int i = rand();
     int i = 0;
     resident x;
@@ -51,16 +51,6 @@ void refreshResidents(void){
     }
 }
 
-// 全ての障害物を描画する
-void renderObstacles(void){
-    //printf("call render obstacles\n");
-    int i;
-    for(i=residentList_start;i<residentList_end;i++){
-        resident obj = residentList[i];
-        ObstacleDefenition[obj.key].render(obj.birth,obj.param);
-    }
-}
-
 // 全ての障害物と衝突していないか判定する関数
 int judgeCollision(double z){
     int i;
@@ -73,7 +63,7 @@ int judgeCollision(double z){
     return 0;
 }
 
-
+// 障害物の初期化
 void initObstacles(void){
     ObstacleDefenition = malloc(sizeof(Obstacle)*OBSTACLE_NUMBER);
     int i;
@@ -85,6 +75,17 @@ void initObstacles(void){
     residentList_end = 0;
 }
 
+// 全ての障害物を描画する
+void renderObstacles(void){
+    //printf("call render obstacles\n");
+    int i;
+    for(i=residentList_start;i<residentList_end;i++){
+        resident obj = residentList[i];
+        ObstacleDefenition[obj.key].render(obj.birth,obj.param);
+    }
+}
+
+// 障害物の終了
 void endObstacles(void){
     free(residentList);
 }

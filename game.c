@@ -21,8 +21,6 @@ static double camera_pz;            // devlopper camera
 
 static int game_over_flag;          // game system
 
-///////////////////////////////////////////////////////////////////////////////
-
 // 各フレームごとにゲームの状態を更新する関数
 static void game_refresh(void){
     refreshResidents();
@@ -58,9 +56,9 @@ static void printString(char* str, int x0, int y0){
 // ゲーム開始時に実行する
 static void game_init(void){
     glEnable(GL_LIGHTING);
-    playerInit();
+    initPlayer();
     initObstacles();
-    backgroundInit();
+    initBackground();
 
     camera_x = 0.0;
     camera_y = 0.0;
@@ -76,7 +74,9 @@ static void game_init(void){
 // ゲームを終わる時に実行する
 static void game_exit(void){
     printf("now game exit.\n");
+    endPlayer();
     endObstacles();
+    endBackground();
 }
 
 
@@ -226,9 +226,9 @@ static void renderAll(int width,int height){
 
     adjust_aspect(width,height);
     setPlayerCam();                 // カメラ変換行列をかける
-    render_player();
+    renderPlayer();
     renderObstacles();
-    backgroundRender();
+    renderBackground();
 }
 
 // ゲームオーバー画面の描画
