@@ -1,20 +1,8 @@
 
-/* hoge.c */ ///////////////////////////////////////////////////////////////////
 #include <stdlib.h>
 #include <GL/glut.h>
 #include "global.h"
 #include "obstacle.h"
-
-// global.h ////////////////////////////////////////////////////////////////////
-
-//int window_width;
-//int window_height;
-//int viewport_start_x;
-//int viewport_start_y;
-//int viewport_width;
-//int viewport_height;
-int frame_count;
-unsigned int refresh_msec;
 
 /* 障害物定義の雛形のようなもの */
 

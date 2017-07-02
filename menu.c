@@ -6,20 +6,6 @@
 
 #include <stdio.h> //debug
 
-
-// グローバル変数 ////////////////////////////////////////////////////////////////
-int window_width;
-int window_height;
-int viewport_start_x;
-int viewport_start_y;
-int viewport_width;
-int viewport_height;
-int frame_count;
-
-STATE state;
-
-////////////////////////////////////////////////////////////////////////////////
-
 static int MENU_INIT_FLAG = UNFINISHED;
 
 typedef enum{

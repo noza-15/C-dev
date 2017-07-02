@@ -13,6 +13,7 @@
 #define INITIAL_HHEIGHT 720
 #define GAME_NAME "myapp"
 
+/* グローバル変数の宣言 */
 int window_width;
 int window_height;
 int viewport_start_x;
@@ -21,19 +22,7 @@ int viewport_width;
 int viewport_height;
 int frame_count;
 unsigned int refresh_msec;
-
 STATE state;
-
-/*******************************************************************************
-* プロトタイプ宣言
-*******************************************************************************/
-void timer(int);
-void display(void);
-void reshape(int, int);
-void keyboard(unsigned char, int, int);
-void mouse(int, int, int, int);
-void init(void);
-
 
 // 固定フレームレートで実行する関数
 void timer(int value){

@@ -3,9 +3,6 @@
 #include "global.h"
 #include "player.h"
 
-int frame_count;
-unsigned int refresh_msec;
-
 static int jumped_frame = -1;          // player object
 static double jump_v    = 0;        // player object
 static double jump_z    = 0;        // player object

@@ -1,4 +1,4 @@
-
+﻿
 #include <GL/glut.h>
 #include <math.h>
 #include "global.h"
@@ -8,21 +8,6 @@
 #include "background.h"
 
 #include <stdio.h> // debug
-
-// グローバル変数 ////////////////////////////////////////////////////////////////
-
-//int window_width;
-//int window_height;
-//int viewport_start_x;
-// int viewport_start_y;
-// int viewport_width;
-// int viewport_height;
-// int frame_count;
-// unsigned int refresh_msec;
-
-STATE state;
-
-// game ////////////////////////////////////////////////////////////////////////
 
 static int GAME_INIT_FLAG = UNFINISHED; // game state
 static int DEVELOPPE_MODE = OFF;        // game state
@@ -261,7 +246,7 @@ void game_disp(void){
 
     game_refresh();                 // ゲームの内部状態を更新
 
-    if(DEVELOPPE_MODE == ON){       // 開発者モードなら
+    if(DEVELOPPE_MODE == ON && game_over_flag == OFF){       // 開発者モードなら
         glDisable(GL_LIGHTING);
         glColor3d(0.9,0.3,0.3);
         printString("press x key to exit developper mode",30,30);
@@ -323,6 +308,7 @@ void game_keyboard(unsigned char key, int x, int y){
             state = MENU;
             break;
         case 'w':
+
             break;
         case 'a':
             break;
