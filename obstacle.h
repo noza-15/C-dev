@@ -1,4 +1,5 @@
-﻿#ifndef _OBSTACLE_H_
+
+#ifndef _OBSTACLE_H_
 #define _OBSTACLE_H_
 
 typedef struct{
@@ -12,6 +13,7 @@ void refreshResidents(void);
 void renderObstacles(void);
 int judgeCollision(double);
 void initObstacles(void);
+void endObstacles(void);
 
 
 #endif // _OBSTACLE_H_

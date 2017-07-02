@@ -1,4 +1,5 @@
-﻿#include <GL/glut.h>
+
+#include <GL/glut.h>
 #include <math.h>
 #include "global.h"
 #include "game.h"
@@ -10,14 +11,14 @@
 
 // グローバル変数 ////////////////////////////////////////////////////////////////
 
-int window_width;
-int window_height;
-int viewport_start_x;
-int viewport_start_y;
-int viewport_width;
-int viewport_height;
-int frame_count;
-unsigned int refresh_msec;
+//int window_width;
+//int window_height;
+//int viewport_start_x;
+// int viewport_start_y;
+// int viewport_width;
+// int viewport_height;
+// int frame_count;
+// unsigned int refresh_msec;
 
 STATE state;
 
@@ -84,12 +85,13 @@ static void game_init(void){
     camera_pz = -1.0;
 
     game_over_flag = OFF;
-
+    printf("game init\n");
 }
 
 // ゲームを終わる時に実行する
 static void game_exit(void){
     printf("now game exit.\n");
+    endObstacles();
 }
 
 

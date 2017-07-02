@@ -1,4 +1,5 @@
-﻿#include <stdlib.h>
+
+#include <stdlib.h>
 #include "global.h"
 #include "obstacle.h"
 
@@ -52,10 +53,8 @@ resident residentBirth(void){
 // 確率や条件的に障害物を発生させるかさせないかを決めて障害物リストを更新する関数
 // 消したり生成したり
 void refreshResidents(void){
-    static int i = 0;
     if(frame_count%70==0){
-        residentList[i++] = residentBirth();
-        residentList_end++;
+        residentList[residentList_end++] = residentBirth();
     }
     int j;
     for(j=residentList_start;j<residentList_end;j++){
@@ -97,4 +96,8 @@ void initObstacles(void){
     residentList = malloc(sizeof(resident)*100);
     residentList_start = 0;
     residentList_end = 0;
+}
+
+void endObstacles(void){
+    free(residentList);
 }

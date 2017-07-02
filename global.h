@@ -1,4 +1,5 @@
-﻿#ifndef _GLOBAL_H_
+
+#ifndef _GLOBAL_H_
 #define _GLOBAL_H_
 
 typedef enum{
