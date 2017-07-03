@@ -142,3 +142,13 @@ void menu_special(int key, int x, int y){
 void menu_mouse(int button, int mouse_state, int x, int y){
 
 }
+
+// メニュー画面でのマウスドラッグの受け取り
+void menu_motion(int x, int y){
+
+}
+
+// メニュー画面でのマウスの動きの受け取り
+void menu_passiveMotion(int x, int y){
+
+}

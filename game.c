@@ -352,3 +352,13 @@ void game_special(int key, int x, int y){
 void game_mouse(int button, int mouse_state, int x, int y){
 
 }
+
+// マウスドラッグの入力で呼び出される関数
+void game_motion(int x, int y){
+
+}
+
+// マウスの動きの入力で呼び出される関数
+void game_passiveMotion(int x, int y){
+    
+}

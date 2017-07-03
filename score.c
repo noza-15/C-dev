@@ -51,3 +51,13 @@ void score_special(int key, int x, int y){
 void score_mouse(int button, int mouse_state, int x, int y){
 
 }
+
+// スコア・ランキングでのマウスドラッグ入力
+void score_motion(int x, int y){
+
+}
+
+// スコア・ランキングでのマウスの動き入力
+void score_passiveMotion(int x, int y){
+    
+}

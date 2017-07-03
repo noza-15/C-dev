@@ -118,6 +118,36 @@ void mouse(int button, int mouse_state, int x, int y){
     }
 }
 
+// マウスのドラッグがあった時に呼び出される関数
+void motion(int x, int y){
+    switch(state){
+        case MENU:
+            menu_motion(x,y);
+            break;
+        case GAME:
+            game_motion(x,y);
+            break;
+        case SCORE:
+            score_motion(x,y);
+            break;
+    }
+}
+
+// マウスの動きがあった時に呼び出される関数
+void passiveMotion(int x, int y){
+    switch(state){
+        case MENU:
+            menu_passiveMotion(x,y);
+            break;
+        case GAME:
+            game_passiveMotion(x,y);
+            break;
+        case SCORE:
+            score_passiveMotion(x,y);
+            break;
+    }
+}
+
 // 初期化関数
 void init(void){
     glEnable(GL_DEPTH_TEST);            // 深度判定を行う
@@ -151,6 +181,8 @@ int main(int argc, char *argv[]){
     glutKeyboardFunc(keyboard);             // キーボードの受け取り
     glutSpecialFunc(special);               // 特殊キーが押された時
     glutMouseFunc(mouse);                   // マウスの受け取り
+    glutMotionFunc(motion);                 // マウスドラッグの受け取り
+    glutPassiveMotionFunc(passiveMotion);   // マウスの動きの受け取り
 
     init();                                 // 適切な初期化をする
     glutMainLoop();                         // 開始
