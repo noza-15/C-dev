@@ -18,8 +18,25 @@ static double camera_z;             // devlopper camera
 static double camera_px;            // devlopper camera
 static double camera_py;            // devlopper camera
 static double camera_pz;            // devlopper camera
+static double ang_x;
+static double ang_y;
+static int motion_x;                // developper camera
+static int motion_y;                // developper camera
 
 static int game_over_flag;          // game system
+
+static void updateDevCam(void){
+    const double speed = 0.00007;
+    ang_x += motion_x * speed;
+    ang_y -= motion_y * speed;
+    if(ang_x < -M_PI) ang_x += M_PI * 2;
+    else if(ang_x > M_PI) ang_x -= M_PI * 2;
+    if(ang_y < -M_PI_2) ang_y = -M_PI_2;
+    else if(ang_y > M_PI_2) ang_y = M_PI_2;
+    camera_px = sin(ang_x) * cos(ang_y);
+    camera_py = sin(ang_y);
+    camera_pz = cos(ang_x) * cos(ang_y);
+}
 
 // 各フレームごとにゲームの状態を更新する関数
 static void game_refresh(void){
@@ -65,9 +82,10 @@ static void game_init(void){
     camera_z = 20.0;
     camera_px = 0.0;
     camera_py = 0.0;
-    camera_pz = -1.0;
+    camera_pz = 1.0;
 
     game_over_flag = OFF;
+    DEVELOPPE_MODE = OFF;
     printf("game init\n");
 }
 
@@ -210,7 +228,7 @@ static void setDevCam(void){
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     gluLookAt(camera_x, camera_y, camera_z,
-                camera_x+camera_px, camera_y+camera_py, camera_z+camera_pz, 0.0, 1.0, 0.0);
+                camera_x+camera_px, camera_y+camera_py, camera_z-camera_pz, 0.0, 1.0, 0.0);
 }
 
 // 画面サイズに合わせてカメラのアスペクト比を決める
@@ -225,7 +243,6 @@ static void adjust_aspect(int width, int height){
 static void renderAll(int width,int height){
 
     adjust_aspect(width,height);
-    setPlayerCam();                 // カメラ変換行列をかける
     renderPlayer();
     renderObstacles();
     renderBackground();
@@ -233,6 +250,7 @@ static void renderAll(int width,int height){
 
 // ゲームオーバー画面の描画
 static void over_disp(void){
+    glColor3d(1.0,0.0,0.0);
     printString("game over",30,30);
 }
 
@@ -255,6 +273,7 @@ void game_disp(void){
         // 左半分に描画するよう設定
         glViewport(viewport_start_x, viewport_start_y+viewport_height/2,
                     viewport_width/2, viewport_height/2);
+        setPlayerCam();
         renderAll(viewport_width/2,viewport_height/2);
 
         // 右上に軸付きのプレイ画面を表示
@@ -270,6 +289,7 @@ void game_disp(void){
         glViewport(viewport_start_x+viewport_width/2, viewport_start_y,
                     viewport_width/2, viewport_height);
         adjust_aspect(viewport_width/2, viewport_height);
+        updateDevCam();
         setDevCam();
         coordinate_axis(20.0);  // 座標軸を表示
         zx_lines(20,0.5);          // XZ平面の目盛りを表示
@@ -285,6 +305,7 @@ void game_disp(void){
 
         glViewport(viewport_start_x, viewport_start_y,
                     viewport_width, viewport_height);
+        setPlayerCam();
         renderAll(viewport_width,viewport_height);    // プレイヤー向けの描画関数を呼び出す
     }else{
         glViewport(viewport_start_x, viewport_start_y,
@@ -307,8 +328,11 @@ void game_keyboard(unsigned char key, int x, int y){
             GAME_INIT_FLAG = UNFINISHED;
             state = MENU;
             break;
+        case ' ':
+            printf("push space\n");
+            jump();
+            break;
         case 'w':
-
             break;
         case 'a':
             break;
@@ -320,12 +344,20 @@ void game_keyboard(unsigned char key, int x, int y){
             if(DEVELOPPE_MODE == ON) game_over_flag = ON;
             break;
         case 'x':
+            printf("push x\n");
             if(DEVELOPPE_MODE == ON){
                 printf("developper mode off.\n");
+                glutSetCursor(GLUT_CURSOR_INHERIT);
                 DEVELOPPE_MODE = OFF;
             }else{
                 printf("developper mode on.\n");
+                glutSetCursor(GLUT_CURSOR_NONE);
+                ang_x = 0.0;
+                ang_y = 0.0;
+                motion_x = 0;
+                motion_y = 0;
                 DEVELOPPE_MODE = ON;
+                glutWarpPointer(viewport_start_x+3*viewport_width/4,viewport_start_y+viewport_height/2);
             }
     }
 }
@@ -360,5 +392,15 @@ void game_motion(int x, int y){
 
 // マウスの動きの入力で呼び出される関数
 void game_passiveMotion(int x, int y){
-    
+    static int wrap = 0;
+    if(DEVELOPPE_MODE == ON){
+        if(!wrap){
+            motion_x = x - viewport_start_x - 3*viewport_width/4;
+            motion_y = y - viewport_start_y - viewport_height/2;
+            wrap = 1;
+            glutWarpPointer(viewport_start_x+3*viewport_width/4,viewport_start_y+viewport_height/2);
+        }else{
+            wrap = 0;
+        }
+    }
 }

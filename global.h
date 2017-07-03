@@ -20,7 +20,7 @@ extern int frame_count;
 extern unsigned int refresh_msec;
 
 #define MAX_FRAME 100000000
-#define INITIAL_MSEC 20
+#define INITIAL_MSEC 30
 
 #define FINISHED   0
 #define UNFINISHED 1
