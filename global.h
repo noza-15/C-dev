@@ -4,8 +4,9 @@
 
 typedef enum{
     MENU,
+    SELECTOR,
     GAME,
-    SCORE
+    RANKING
 }STATE;
 
 extern STATE state;

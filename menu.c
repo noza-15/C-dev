@@ -10,7 +10,7 @@ static int MENU_INIT_FLAG = UNFINISHED;
 
 typedef enum{
     selectGAME,
-    selectSCORE,
+    selectRANKING,
     selectQUIT
 }CURSOR;
 
@@ -76,7 +76,7 @@ void menu_disp(void){
     if(cursor == selectGAME)    glColor3d(0.9,0.9,0.4);
     else                        glColor3d(0.4,0.4,0.4);
     printString("game start : press g key",630,320);
-    if(cursor == selectSCORE)   glColor3d(0.9,0.9,0.4);
+    if(cursor == selectRANKING)   glColor3d(0.9,0.9,0.4);
     else                        glColor3d(0.4,0.4,0.4);
     printString("score ranking : press s key",630,340);
     if(cursor == selectQUIT)    glColor3d(0.9,0.9,0.4);
@@ -95,12 +95,12 @@ void menu_keyboard(unsigned char key, int x, int y){
         case 'g':
             menu_exit();
             MENU_INIT_FLAG = UNFINISHED;
-            state = GAME;
+            state = SELECTOR;
             break;
         case 's':
             menu_exit();
             MENU_INIT_FLAG = UNFINISHED;
-            state = SCORE;
+            state = RANKING;
             break;
         default :
             break;
@@ -123,12 +123,12 @@ void menu_special(int key, int x, int y){
                 case selectGAME:
                     menu_exit();
                     MENU_INIT_FLAG = UNFINISHED;
-                    state = GAME;
+                    state = SELECTOR;
                     break;
-                case selectSCORE:
+                case selectRANKING:
                     menu_exit();
                     MENU_INIT_FLAG = UNFINISHED;
-                    state = SCORE;
+                    state = RANKING;
                     break;
                 case selectQUIT:
                     exit(0);
