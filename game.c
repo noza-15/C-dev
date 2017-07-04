@@ -9,6 +9,14 @@
 
 #include <stdio.h> // debug
 
+#ifndef M_PI
+#define M_PI 3.14159265
+#endif // M_PI
+
+#ifndef M_PI_2
+#define M_PI_2 1.57079633
+#endif // M_PI_2
+
 static int GAME_INIT_FLAG = UNFINISHED; // game state
 static int DEVELOPPE_MODE = OFF;        // game state
 
