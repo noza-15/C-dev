@@ -6,8 +6,9 @@
 #include "global.h"
 
 #include "menu.h"
+#include "selector.h"
 #include "game.h"
-#include "score.h"
+#include "ranking.h"
 
 #define INITIAL_WIDTH 1280
 #define INITIAL_HHEIGHT 720
@@ -41,11 +42,14 @@ void display(void){
         case MENU:
             menu_disp();
             break;
+        case SELECTOR:
+            selector_disp();
+            break;
         case GAME:
             game_disp();
             break;
-        case SCORE:
-            score_disp();
+        case RANKING:
+            ranking_disp();
             break;
     }
 }
@@ -79,11 +83,14 @@ void keyboard(unsigned char key, int x, int y){
         case MENU:
             menu_keyboard(key,x,y);
             break;
+        case SELECTOR:
+            selector_keyboard(key,x,y);
+            break;
         case GAME:
             game_keyboard(key,x,y);
             break;
-        case SCORE:
-            score_keyboard(key,x,y);
+        case RANKING:
+            ranking_keyboard(key,x,y);
             break;
     }
 }
@@ -94,11 +101,14 @@ void special(int key, int x, int y){
         case MENU:
             menu_special(key,x,y);
             break;
+        case SELECTOR:
+            selector_special(key,x,y);
+            break;
         case GAME:
             game_special(key,x,y);
             break;
-        case SCORE:
-            score_special(key,x,y);
+        case RANKING:
+            ranking_special(key,x,y);
             break;
     }
 }
@@ -109,11 +119,14 @@ void mouse(int button, int mouse_state, int x, int y){
         case MENU:
             menu_mouse(button,mouse_state,x,y);
             break;
+        case SELECTOR:
+            selector_mouse(button,mouse_state,x,y);
+            break;
         case GAME:
             game_mouse(button,mouse_state,x,y);
             break;
-        case SCORE:
-            score_mouse(button,mouse_state,x,y);
+        case RANKING:
+            ranking_mouse(button,mouse_state,x,y);
             break;
     }
 }
@@ -124,11 +137,14 @@ void motion(int x, int y){
         case MENU:
             menu_motion(x,y);
             break;
+        case SELECTOR:
+            selector_motion(x,y);
+            break;
         case GAME:
             game_motion(x,y);
             break;
-        case SCORE:
-            score_motion(x,y);
+        case RANKING:
+            ranking_motion(x,y);
             break;
     }
 }
@@ -139,11 +155,14 @@ void passiveMotion(int x, int y){
         case MENU:
             menu_passiveMotion(x,y);
             break;
+        case SELECTOR:
+            selector_passiveMotion(x,y);
+            break;
         case GAME:
             game_passiveMotion(x,y);
             break;
-        case SCORE:
-            score_passiveMotion(x,y);
+        case RANKING:
+            ranking_passiveMotion(x,y);
             break;
     }
 }

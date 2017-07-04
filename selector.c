@@ -1,27 +1,27 @@
 ﻿
 #include <GL/glut.h>
 #include "global.h"
-#include "score.h"
+#include "selector.h"
 
 #include <stdio.h> // debug
 
-static int SCORE_INIT_FLAG = UNFINISHED;
+static int SELECTOR_INIT_FLAG = UNFINISHED;
 
 // ゲーム開始時に実行する
-static void score_init(void){
-    printf("now score initialize.\n");
+static void selector_init(void){
+    printf("now selector initialize.\n");
 }
 
 // ゲームを終わる時に実行する
-static void score_exit(void){
-    printf("now score exit.\n");
+static void selector_exit(void){
+    printf("now selector exit.\n");
 }
 
 // スコア・ランキング画面の描画関数
-void score_disp(void){
-    if(SCORE_INIT_FLAG == UNFINISHED){
-        score_init();
-        SCORE_INIT_FLAG = FINISHED;
+void selector_disp(void){
+    if(SELECTOR_INIT_FLAG == UNFINISHED){
+        selector_init();
+        SELECTOR_INIT_FLAG = FINISHED;
     }
 
     glViewport(viewport_start_x,viewport_start_y,viewport_width,viewport_height);
@@ -32,32 +32,37 @@ void score_disp(void){
 }
 
 // スコア・ランキングでのキーボード入力
-void score_keyboard(unsigned char key, int x, int y){
+void selector_keyboard(unsigned char key, int x, int y){
 
 }
 
 // スコア・ランキングでの特殊キー入力
-void score_special(int key, int x, int y){
+void selector_special(int key, int x, int y){
     switch(key){
         case GLUT_KEY_LEFT:
-            score_exit();
-            SCORE_INIT_FLAG = UNFINISHED;
+            selector_exit();
+            SELECTOR_INIT_FLAG = UNFINISHED;
             state = MENU;
+            break;
+        case GLUT_KEY_RIGHT:
+            selector_exit();
+            SELECTOR_INIT_FLAG = UNFINISHED;
+            state = GAME;
             break;
     }
 }
 
 // スコア・ランキングでのマウス入力
-void score_mouse(int button, int mouse_state, int x, int y){
+void selector_mouse(int button, int mouse_state, int x, int y){
 
 }
 
 // スコア・ランキングでのマウスドラッグ入力
-void score_motion(int x, int y){
+void selector_motion(int x, int y){
 
 }
 
 // スコア・ランキングでのマウスの動き入力
-void score_passiveMotion(int x, int y){
-    
+void selector_passiveMotion(int x, int y){
+
 }
