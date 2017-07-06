@@ -36,5 +36,5 @@
 
 
 ## wiki
-
 [wiki](https://github.com/noza-15/C-dev/wiki)
+
