@@ -2,13 +2,14 @@
 #include <stdlib.h>
 #include "global.h"
 #include "obstacle.h"
+#include "player.h"
 
 #include "hoge.h"
 #include "huga.h"
 
 #include <stdio.h> // debug
 
-#define OBSTACLE_NUMBER 4   // 全ての障害物の種類の数
+#define OBSTACLE_NUMBER 2   // 全ての障害物の種類の数
 
 // 障害物定義リスト
 static Obstacle *ObstacleDefenition;
@@ -28,11 +29,12 @@ static int residentList_end;
 
 // 確率的に障害物を発生して返す関数
 static resident residentBirth(void){
-    int i = 4*rand()/RAND_MAX;
+    int i = rand()%OBSTACLE_NUMBER;
     //int i = 0;
     resident x;
+    double z = getPlayerPosition();
     x.key = i;
-    x.param = ObstacleDefenition[i].init();
+    x.param = ObstacleDefenition[i].init(z);
     x.birth = frame_count;
     return x;
 }
@@ -67,15 +69,8 @@ int judgeCollision(double z){
 // 障害物の初期化
 void initObstacles(void){
     ObstacleDefenition = malloc(sizeof(Obstacle)*OBSTACLE_NUMBER);
-    int i;
-	for (i = 0;i < OBSTACLE_NUMBER;i++) {
-		if (i % 2) {
-			ObstacleDefenition[i] = getHogeDefinition();
-		}
-		else {
-			ObstacleDefenition[i] = getHugaDefinition();
-		}
-	}
+    ObstacleDefenition[0] = getHogeDefinition();
+    ObstacleDefenition[1] = getHugaDefinition();
     residentList = malloc(sizeof(resident)*100);
     residentList_start = 0;
     residentList_end = 0;
@@ -84,10 +79,11 @@ void initObstacles(void){
 // 全ての障害物を描画する
 void renderObstacles(void){
     //printf("call render obstacles\n");
+    double z = getPlayerPosition();
     int i;
     for(i=residentList_start;i<residentList_end;i++){
         resident obj = residentList[i];
-        ObstacleDefenition[obj.key].render(obj.birth,obj.param);
+        ObstacleDefenition[obj.key].render(obj.birth,obj.param,z);
     }
 }
 

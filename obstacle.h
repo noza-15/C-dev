@@ -3,10 +3,10 @@
 #define _OBSTACLE_H_
 
 typedef struct{
-    double* (*init)(void);              // -> パラメータ
-    void    (*render)(int,double*);     // 誕生秒,パラメータ
+    double* (*init)(double);              // -> パラメータ，プレイヤー位置
+    void    (*render)(int,double*,double);     // 誕生秒,パラメータ，プレイヤー位置
     int     (*judge)(int,double*,double);  // 誕生秒,パラメータ,プレイヤー位置 -> 真偽
-    void    (*delete)(int,double*);     // 誕生秒,パラメータ
+    void    (*delete)(int,double*,double);     // 誕生秒,パラメータ，プレイヤー位置
 } Obstacle;
 
 void refreshResidents(void);

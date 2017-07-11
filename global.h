@@ -19,7 +19,6 @@ extern int viewport_width;
 extern int viewport_height;
 extern int frame_count;
 extern unsigned int refresh_msec;
-extern double user_z;
 
 #define MAX_FRAME 100000000
 #define INITIAL_MSEC 30
