@@ -53,6 +53,17 @@ void initPlayer(void){
     jump_z    = 0;              // player object
 }
 
+static void render_crash_wire() {
+	glBegin(GL_LINE_LOOP);
+	double z = getPlayerPosition();
+	glVertex3d(-0.5, z-0.5, 1);
+	glVertex3d(-0.5, z+0.5, 1);
+	glVertex3d(0.5, z+0.5, 1);
+	glVertex3d(0.5, z-0.5, 1);
+	glEnd();
+
+}
+
 // プレイヤーを描画する関数
 void renderPlayer(void){
 
@@ -67,7 +78,7 @@ void renderPlayer(void){
     glRotated(0.0, 0.0, 0.0, 1.0);  // z軸回転行列をかける
     glutSolidCube(1);               // モデルの描画
     glPopMatrix();                  // 変換行列を記憶した行列に戻す
-
+	render_crash_wire();
 }
 
 void endPlayer(void){

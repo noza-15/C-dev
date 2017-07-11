@@ -97,6 +97,12 @@ void menu_keyboard(unsigned char key, int x, int y){
             MENU_INIT_FLAG = UNFINISHED;
             state = SELECTOR;
             break;
+		case 'd':
+			menu_exit();
+			MENU_INIT_FLAG = UNFINISHED;
+			state = GAME;
+			break;
+
         case 's':
             menu_exit();
             MENU_INIT_FLAG = UNFINISHED;

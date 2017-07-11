@@ -4,6 +4,7 @@
 #include "obstacle.h"
 
 #include "hoge.h"
+#include "huga.h"
 
 #include <stdio.h> // debug
 
@@ -27,8 +28,8 @@ static int residentList_end;
 
 // 確率的に障害物を発生して返す関数
 static resident residentBirth(void){
-    //int i = rand();
-    int i = 0;
+    int i = 4*rand()/RAND_MAX;
+    //int i = 0;
     resident x;
     x.key = i;
     x.param = ObstacleDefenition[i].init();
@@ -67,9 +68,14 @@ int judgeCollision(double z){
 void initObstacles(void){
     ObstacleDefenition = malloc(sizeof(Obstacle)*OBSTACLE_NUMBER);
     int i;
-    for(i=0;i<OBSTACLE_NUMBER;i++){
-        ObstacleDefenition[i] = getHogeDefinition();
-    }
+	for (i = 0;i < OBSTACLE_NUMBER;i++) {
+		if (i % 2) {
+			ObstacleDefenition[i] = getHogeDefinition();
+		}
+		else {
+			ObstacleDefenition[i] = getHugaDefinition();
+		}
+	}
     residentList = malloc(sizeof(resident)*100);
     residentList_start = 0;
     residentList_end = 0;
