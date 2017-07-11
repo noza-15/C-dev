@@ -243,7 +243,7 @@ static void setDevCam(void){
 static void adjust_aspect(int width, int height){
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(40.0, (double)width / (double)height, 1.0, 100.0);
+    gluPerspective(40.0, (double)width / (double)height, 1.0, 1000.0);
     glMatrixMode(GL_MODELVIEW);
 }
 
