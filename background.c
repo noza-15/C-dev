@@ -34,13 +34,13 @@ void renderBackground(void){
             glColor3d(0.0,fabs(s),fabs(c));
 	    glTranslatef(x*400.0, j*40.0, z*400.0);
 	    glRotatef(torque+j*90.0, 0.0, 1.0, 0.0);
-            glutSolidCube(10);
+            glutSolidCube(14);
             glPopMatrix();
 
             glPushMatrix();
             glColor3d(0.0,0.0,1.0);
             glTranslatef(x*400.0, j*40.0-20.0, z*400.0);
-            glutSolidCube(10);
+            glutSolidCube(14);
             glPopMatrix();
         }
     }    
