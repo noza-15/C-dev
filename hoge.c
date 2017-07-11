@@ -166,7 +166,7 @@ Obstacle getHogeDefinition(void) {
 //// hogeを描画する関数
 //static void hoge_render(int birth, double* param) {
 //	glPushMatrix();
-//	
+//
 //	if (frame_count - birth < 1.5 * 1000 / refresh_msec && frame_count - birth > 1.5 * 1000 / refresh_msec-2)param[1] = (param[2] - user_z) / param[0];
 //
 //	//if(frame_count%3==0)printf("%lf\t%lf\n",param[0],param[1]);
@@ -175,7 +175,7 @@ Obstacle getHogeDefinition(void) {
 //	glEnable(GL_NORMALIZE);
 //	glColor3d(0.0, 1.0, 1.0);
 //	glScalef(0.5, 0.5, 0.5);
-//	
+//
 //	glutSolidDodecahedron();
 //	glEnable(GL_LIGHTING);
 //	glPopMatrix();
