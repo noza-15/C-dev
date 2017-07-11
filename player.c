@@ -67,7 +67,7 @@ void renderPlayer(void){
     glRotated(0.0, 0.0, 0.0, 1.0);  // z軸回転行列をかける
     glutSolidCube(1);               // モデルの描画
     glPopMatrix();                  // 変換行列を記憶した行列に戻す
-
+    
 }
 
 void endPlayer(void){
