@@ -1,13 +1,22 @@
-#include <GL/glut.h>
-#include <stdio.h>
+﻿#include <GL/glut.h>
 #include <math.h>
 #include "global.h"
 
+#include <stdio.h> //debug
+
 static int bgBirthFrame;
 
-#define pi 3.14
+#ifndef M_PI
+#define M_PI 3.14159265
+#endif // M_PI
+
+#ifndef M_PI_2
+#define M_PI_2 1.57079633
+#endif // M_PI_2
+
 
 // 背景の初期化
+
 void initBackground(void){
     bgBirthFrame = frame_count;
 }
@@ -15,8 +24,8 @@ void initBackground(void){
 // 背景の描画
 void renderBackground(void){
        int f = (frame_count - bgBirthFrame) % 180;
-    double c = cos(f*pi/180.0);
-    double s = sin(f*pi/180.0);
+    double c = cos(f*M_PI/180.0);
+    double s = sin(f*M_PI/180.0);
 
     double torque = 360.0*c;
     
@@ -27,8 +36,8 @@ void renderBackground(void){
     int i,j;
     double x,z;
     for(i=1; i<73; i++){
-        x = cos(i*5.0*pi/180.0);
-        z = sin(i*5.0*pi/180.0);
+        x = cos(i*5.0*M_PI/180.0);
+        z = sin(i*5.0*M_PI/180.0);
         for(j=-9; j<12; j++){
 	    glPushMatrix();
             glColor3d(0.0,fabs(s),fabs(c));
