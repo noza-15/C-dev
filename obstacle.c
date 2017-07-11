@@ -6,10 +6,12 @@
 
 #include "hoge.h"
 #include "huga.h"
+#include "missile.h"
+#include "speed.h"
 
 #include <stdio.h> // debug
 
-#define OBSTACLE_NUMBER 2   // 全ての障害物の種類の数
+#define OBSTACLE_NUMBER 4   // 全ての障害物の種類の数
 
 // 障害物定義リスト
 static Obstacle *ObstacleDefenition;
@@ -69,8 +71,11 @@ int judgeCollision(double z){
 // 障害物の初期化
 void initObstacles(void){
     ObstacleDefenition = malloc(sizeof(Obstacle)*OBSTACLE_NUMBER);
-    ObstacleDefenition[0] = getHogeDefinition();
-    ObstacleDefenition[1] = getHugaDefinition();
+	ObstacleDefenition[0] = getHogeDefinition();
+	ObstacleDefenition[1] = getHugaDefinition();
+	ObstacleDefenition[2] = getSpeedDefinition();
+	ObstacleDefenition[3] = getMissileDefinition();
+
     residentList = malloc(sizeof(resident)*100);
     residentList_start = 0;
     residentList_end = 0;
