@@ -1,58 +1,59 @@
+ï»¿
 #include <math.h>
 #include <stdlib.h>
 #include <GL/glut.h>
 #include "global.h"
 #include "obstacle.h"
-/* áŠQ•¨’è‹`‚Ì—Œ`‚Ì‚æ‚¤‚È‚à‚Ì */
+/* éšœå®³ç‰©å®šç¾©ã®é››å½¢ã®ã‚ˆã†ãªã‚‚ã® */
 
 //double user_z = 0;
 
-// speed‚ª¶¬‚³‚ê‚é‚ÉÀs‚³‚ê‚éŠÖ”
-static double* speed_init(void) {
-	double* p;
-	p = malloc(sizeof(double) * 3);
-	p[0] = 15;//“G‚ÌÀ•W
-	p[1] = 0;//ˆÚ“®‚ÌŒX‚«
-	p[2] = 6.0*rand() / RAND_MAX - 3;//zÀ•W‚Ì‰Šú’l
-	return p;
+// speedãŒç”Ÿæˆã•ã‚Œã‚‹æ™‚ã«å®Ÿè¡Œã•ã‚Œã‚‹é–¢æ•°
+static double* speed_init(double z) {
+    double* p;
+    p = malloc(sizeof(double) * 3);
+    p[0] = 15;//æ•µã®åº§æ¨™
+    p[1] = 0;//ç§»å‹•ã®å‚¾ã
+    p[2] = 6.0*rand() / RAND_MAX - 3;//zåº§æ¨™ã®åˆæœŸå€¤
+    return p;
 }
 
-// speed‚ğ•`‰æ‚·‚éŠÖ”
-static void speed_render(int birth, double* param) {
+// speedã‚’æç”»ã™ã‚‹é–¢æ•°
+static void speed_render(int birth, double* param, double z) {
 
-	param[0] = 15-0.2*(frame_count-birth) - 1*sin(1.0*(frame_count - birth) / 10);
+    param[0] = 15-0.2*(frame_count-birth) - 1*sin(1.0*(frame_count - birth) / 10);
 
-	glPushMatrix();
-	glTranslatef(param[0], param[2], 0.0);
-	glDisable(GL_LIGHTING);
-	glEnable(GL_NORMALIZE);
-	glColor3d(0.6, 0.4, 1.0);
-	glScalef(0.7, 0.7, 0.7);
-	glutSolidOctahedron();
-	glEnable(GL_LIGHTING);
-	glPopMatrix();
-	
+    glPushMatrix();
+    glTranslatef(param[0], param[2], 0.0);
+    glDisable(GL_LIGHTING);
+    glEnable(GL_NORMALIZE);
+    glColor3d(0.6, 0.4, 1.0);
+    glScalef(0.7, 0.7, 0.7);
+    glutSolidOctahedron();
+    glEnable(GL_LIGHTING);
+    glPopMatrix();
+
 }
 
-// speed‚ªƒvƒŒƒCƒ„[‚ÆÕ“Ë‚µ‚½‚©’²‚×‚éŠÖ”
+// speedãŒãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¨è¡çªã—ãŸã‹èª¿ã¹ã‚‹é–¢æ•°
 static int speed_judge(int birth, double* param, double z) {
-	if (param[0]<0.5 && param[0]>-0.5 && z>param[2] - 0.4 && z<param[2] + 0.4)return 1;
-	return 0;
+    if (param[0]<0.5 && param[0]>-0.5 && z>param[2] - 0.4 && z<param[2] + 0.4)return 1;
+    return 0;
 }
 
-// speed‚ğíœ‚·‚é‚ÉÀs‚·‚éŠÖ”
-static void speed_delete(int birth, double* param) {
+// speedã‚’å‰Šé™¤ã™ã‚‹æ™‚ã«å®Ÿè¡Œã™ã‚‹é–¢æ•°
+static void speed_delete(int birth, double* param, double z) {
 
 }
 
-// speed‚Æ‚¢‚¤áŠQ•¨‚Ì’è‹`‚ğ•Ô‚·ŠÖ”
+// speedã¨ã„ã†éšœå®³ç‰©ã®å®šç¾©ã‚’è¿”ã™é–¢æ•°
 Obstacle getSpeedDefinition(void) {
-	//ÀÛ‚ÌáŠQ•¨’è‹`‚Ì—á
-	Obstacle speed = {
-		speed_init,
-		speed_render,
-		speed_judge,
-		speed_delete
-	};
-	return speed;
+    //å®Ÿéš›ã®éšœå®³ç‰©å®šç¾©ã®ä¾‹
+    Obstacle speed = {
+        speed_init,
+        speed_render,
+        speed_judge,
+        speed_delete
+    };
+    return speed;
 }
