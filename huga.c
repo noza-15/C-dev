@@ -31,14 +31,12 @@ static void render_crash_wire(double* param) {
 
 // hugaを描画する関数
 static void huga_render(int birth, double* param, double z) {
-    param[0] -= 0.1;
-    //param[2] -= 0.1 * ;
+    param[0] = 15 - 0.3*(frame_count - birth);
     glPushMatrix();
-
     glTranslatef(param[0], param[2], 0.0);
     glDisable(GL_LIGHTING);
     glEnable(GL_NORMALIZE);
-    glColor3d(0.6, 0.4, 1.0);
+    glColor3d(1, 0.4, 0.4);
     glScalef(4 + 3.8*sin(1.0*(frame_count - birth) / 8 + param[1]), 0.5, 0.5);
     //if (frame_count % 3 == 1)printf("%6.4lf\t%6.4lf\n", param[0], param[2]);
     glutSolidCube(1);
