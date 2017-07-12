@@ -1,4 +1,5 @@
-﻿#include <GL/glut.h>
+﻿
+#include <GL/glut.h>
 #include <math.h>
 #include "global.h"
 
@@ -28,21 +29,21 @@ void renderBackground(void){
     double s = sin(f*M_PI/180.0);
 
     double torque = 360.0*c;
-    
+
     //printf("f:%d c:%f torque:%f \n", f, c, torque); //for debugging printf
-    
+
     glDisable(GL_LIGHTING);
-    
+
     int i,j;
     double x,z;
     for(i=1; i<73; i++){
         x = cos(i*5.0*M_PI/180.0);
         z = sin(i*5.0*M_PI/180.0);
         for(j=-9; j<12; j++){
-	    glPushMatrix();
+            glPushMatrix();
             glColor3d(0.0,fabs(s),fabs(c));
-	    glTranslatef(x*400.0, j*40.0, z*400.0);
-	    glRotatef(torque+j*90.0, 0.0, 1.0, 0.0);
+            glTranslatef(x*400.0, j*40.0, z*400.0);
+            glRotatef(torque+j*90.0, 0.0, 1.0, 0.0);
             glutSolidCube(14);
             glPopMatrix();
 
@@ -52,7 +53,7 @@ void renderBackground(void){
             glutSolidCube(14);
             glPopMatrix();
         }
-    }    
+    }
     glEnable(GL_LIGHTING);
 }
 
