@@ -32,7 +32,7 @@ static void render_crash_wire(double* param) {
 
 // hogeを描画する関数
 static void hoge_render(int birth, double* param, double z) {
-	param[0] = 15 - 0.3*(frame_count - birth);
+    param[0] = 15 - 0.3*(frame_count - birth);
     param[2] = 2*sin(1.0*(frame_count - birth) / 10 + param[1]);
     glPushMatrix();
 

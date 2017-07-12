@@ -71,11 +71,10 @@ int judgeCollision(double z){
 // 障害物の初期化
 void initObstacles(void){
     ObstacleDefenition = malloc(sizeof(Obstacle)*OBSTACLE_NUMBER);
-	ObstacleDefenition[0] = getHogeDefinition();
-	ObstacleDefenition[1] = getHugaDefinition();
-	ObstacleDefenition[2] = getSpeedDefinition();
-	ObstacleDefenition[3] = getMissileDefinition();
-
+    ObstacleDefenition[0] = getHogeDefinition();
+    ObstacleDefenition[1] = getHugaDefinition();
+    ObstacleDefenition[2] = getSpeedDefinition();
+    ObstacleDefenition[3] = getMissileDefinition();
     residentList = malloc(sizeof(resident)*100);
     residentList_start = 0;
     residentList_end = 0;
