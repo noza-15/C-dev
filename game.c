@@ -330,7 +330,7 @@ void game_keyboard(unsigned char key, int x, int y){
         case 'm':
             game_exit();
             if(DEVELOPPE_MODE == ON){
-                printf("developper mode off.\n");
+                printf("developer mode off.\n");
                 DEVELOPPE_MODE = OFF;
             }
             GAME_INIT_FLAG = UNFINISHED;
@@ -354,11 +354,11 @@ void game_keyboard(unsigned char key, int x, int y){
         case 'x':
             printf("push x\n");
             if(DEVELOPPE_MODE == ON){
-                printf("developper mode off.\n");
+                printf("developer mode off.\n");
                 glutSetCursor(GLUT_CURSOR_INHERIT);
                 DEVELOPPE_MODE = OFF;
             }else{
-                printf("developper mode on.\n");
+                printf("developer mode on.\n");
                 glutSetCursor(GLUT_CURSOR_NONE);
                 ang_x = 0.0;
                 ang_y = 0.0;
