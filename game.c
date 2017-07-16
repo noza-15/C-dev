@@ -259,11 +259,15 @@ static void renderAll(int width, int height) {
 
 // ゲームオーバー画面の描画
 void over_disp(void) {
+    glDisable(GL_LIGHTING);
     glColor3d(1.0, 0.0, 0.0);
     printString("GAME OVER...", 30, 30);
     printString("Press c key to continue.", 30, 60);
     printString("Press r key to restart.", 30, 80);
     printString("Press b key to go back menu.", 30, 100);
+    glEnable(GL_LIGHTING);
+    glViewport(viewport_start_x,viewport_start_y,viewport_width,viewport_height);
+    glutSwapBuffers();
 }
 
 // ゲーム状態で呼び出される描画関数
@@ -320,9 +324,7 @@ void game_disp(void) {
         setPlayerCam();
         renderAll(viewport_width, viewport_height);    // プレイヤー向けの描画関数を呼び出す
     } else {
-        glViewport(viewport_start_x, viewport_start_y,
-                   viewport_width, viewport_height);
-        over_disp();
+        DEVELOPPE_MODE = OFF;
         state = GAME_OVER;
     }
 
@@ -339,19 +341,15 @@ void game_keyboard(unsigned char key, int x, int y) {
                 DEVELOPPE_MODE = OFF;
             }
             GAME_INIT_FLAG = UNFINISHED;
+            srand(1);
             state = MENU;
             break;
         case ' ':
             printf("push space\n");
             jump();
             break;
-        case 'w':
-            break;
-        case 'a':
-            break;
-        case 's':
-            break;
-        case 'd':
+        case 'e':
+            state = GAME_OVER;
             break;
         case 'o':
             if (DEVELOPPE_MODE == ON) game_over_flag = ON;
@@ -375,24 +373,27 @@ void game_keyboard(unsigned char key, int x, int y) {
     }
 }
 
-void over_keyboard(unsigned char key,int x,int y){
-    switch (key){
+void over_keyboard(unsigned char key, int x, int y) {
+    switch (key) {
         case 'b':
             printf("I want to go back to menu!\n");
             game_exit();
+            GAME_INIT_FLAG = UNFINISHED;
+            srand(1);
             state = MENU;
             break;
         case 'c':
             printf("I want to continue!\n");
-            GAME_INIT_FLAG = UNFINISHED;
-            state = SELECTOR;
+            game_over_flag = OFF;
+            initPlayer();
+            state = GAME;
             break;
         case 'r':
             printf("I want to restart!\n");
             game_exit();
             GAME_INIT_FLAG = UNFINISHED;
+            srand(1);
             state = SELECTOR;
-            game_disp();
             break;
     }
 }
@@ -404,25 +405,23 @@ void game_special(int key, int x, int y) {
             jump();
             break;
         case GLUT_KEY_LEFT:
-            game_exit();
+//            game_exit();
             if (DEVELOPPE_MODE == ON) {
                 printf("developer mode off.\n");
                 DEVELOPPE_MODE = OFF;
             }
-            GAME_INIT_FLAG = UNFINISHED;
-            state = MENU;
+//            GAME_INIT_FLAG = UNFINISHED;
+//            state = MENU;
             break;
     }
 }
 
 // マウスの入力で呼び出される関数
 void game_mouse(int button, int mouse_state, int x, int y) {
-
 }
 
 // マウスドラッグの入力で呼び出される関数
 void game_motion(int x, int y) {
-
 }
 
 // マウスの動きの入力で呼び出される関数

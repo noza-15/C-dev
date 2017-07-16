@@ -2,13 +2,13 @@
 #ifndef _GLOBAL_H_
 #define _GLOBAL_H_
 
-typedef enum{
+typedef enum {
     MENU,
     SELECTOR,
     GAME,
     GAME_OVER,
     RANKING
-}STATE;
+} STATE;
 
 extern STATE state;
 

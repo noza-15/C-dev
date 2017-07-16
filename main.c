@@ -49,6 +49,7 @@ void display(void) {
             game_disp();
             break;
         case GAME_OVER:
+            over_disp();
             break;
         case RANKING:
             ranking_disp();
