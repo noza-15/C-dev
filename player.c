@@ -30,8 +30,6 @@ void jump(void) {
         jump_z0 = jump_z;
     }
     jump_v = JUMP_POWER;
-    jump_v = JUMP_POWER;
-
     jumped_frame = frame_count;
 }
 
