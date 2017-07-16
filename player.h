@@ -4,7 +4,6 @@
 
 void jump(void);
 double getPlayerPosition(void);
-
 void initPlayer(void);
 void renderPlayer(void);
 void endPlayer(void);
