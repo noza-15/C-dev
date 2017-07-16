@@ -10,11 +10,11 @@
 
 static int MENU_INIT_FLAG = UNFINISHED;
 
-typedef enum{
+typedef enum {
     selectGAME,
     selectRANKING,
     selectQUIT
-}CURSOR;
+} CURSOR;
 
 #define OBJLEN 10
 
@@ -34,7 +34,7 @@ static double objs[OBJLEN][6] = {
 static CURSOR cursor = selectGAME;
 
 // ゲーム開始時に実行する
-static void menu_init(void){
+static void menu_init(void) {
     printf("now menu initialize.\n");
     srand((unsigned)time(NULL));
     int i;
@@ -50,12 +50,12 @@ static void menu_init(void){
 }
 
 // ゲームを終わる時に実行する
-static void menu_exit(void){
+static void menu_exit(void) {
     printf("now menu exit.\n");
 }
 
 // 画面に文字を描画する関数
-static void printString(char* str, int x0, int y0){
+static void printString(char *str, int x0, int y0) {
     glDisable(GL_LIGHTING);
 
     // 平行投影にする
@@ -70,9 +70,10 @@ static void printString(char* str, int x0, int y0){
 
     // 画面上にテキスト描画
     glRasterPos2f(x0, y0);
-    int length = 0; while(str[length]!='\0')length++;
+    int length = 0;
+    while (str[length] != '\0')length++;
     int i;
-    for(i=0;i<length;i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, str[i]);
+    for (i = 0; i < length; i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, str[i]);
 
     glPopMatrix();
     glMatrixMode(GL_PROJECTION);
@@ -83,9 +84,9 @@ static void printString(char* str, int x0, int y0){
 }
 
 // メニュー画面での描画関数
-void menu_disp(void){
+void menu_disp(void) {
 
-    if(MENU_INIT_FLAG == UNFINISHED){
+    if (MENU_INIT_FLAG == UNFINISHED) {
         menu_init();
         MENU_INIT_FLAG = FINISHED;
     }
@@ -174,11 +175,11 @@ void menu_disp(void){
 }
 
 // メニュー画面でのキーボード受け取り
-void menu_keyboard(unsigned char key, int x, int y){
+void menu_keyboard(unsigned char key, int x, int y) {
 
-    printf("%d\n",key);
+    printf("%d\n", key);
 
-    switch(key){
+    switch (key) {
         case 'g':
             menu_exit();
             MENU_INIT_FLAG = UNFINISHED;
@@ -195,18 +196,18 @@ void menu_keyboard(unsigned char key, int x, int y){
 }
 
 // メニュー画面での特殊キー受け取り
-void menu_special(int key, int x, int y){
-    switch(key){
+void menu_special(int key, int x, int y) {
+    switch (key) {
         case GLUT_KEY_UP:
-            if(cursor == selectGAME) cursor = selectQUIT;
+            if (cursor == selectGAME) cursor = selectQUIT;
             else cursor--;
             break;
         case GLUT_KEY_DOWN:
-            if(cursor == selectQUIT) cursor = selectGAME;
+            if (cursor == selectQUIT) cursor = selectGAME;
             else cursor++;
             break;
         case GLUT_KEY_RIGHT:
-            switch(cursor){
+            switch (cursor) {
                 case selectGAME:
                     menu_exit();
                     MENU_INIT_FLAG = UNFINISHED;
@@ -226,16 +227,16 @@ void menu_special(int key, int x, int y){
 }
 
 // メニュー画面でのマウス受け取り
-void menu_mouse(int button, int mouse_state, int x, int y){
+void menu_mouse(int button, int mouse_state, int x, int y) {
 
 }
 
 // メニュー画面でのマウスドラッグの受け取り
-void menu_motion(int x, int y){
+void menu_motion(int x, int y) {
 
 }
 
 // メニュー画面でのマウスの動きの受け取り
-void menu_passiveMotion(int x, int y){
+void menu_passiveMotion(int x, int y) {
 
 }
