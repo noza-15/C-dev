@@ -1,7 +1,6 @@
 ﻿
 #include <stdlib.h> // 必ずglut.hより先にインクルードする(exit()の多重定義で怒られるので)
 #include <GL/glut.h>
-#include <stdlib.h>
 #include <time.h>
 #include "global.h"
 #include "menu.h"
