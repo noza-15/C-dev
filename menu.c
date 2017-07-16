@@ -1,8 +1,11 @@
 ﻿
 #include <stdlib.h> // 必ずglut.hより先にインクルードする(exit()の多重定義で怒られるので)
 #include <GL/glut.h>
+#include <stdlib.h>
+#include <time.h>
 #include "global.h"
 #include "menu.h"
+#include "raw_data.h"
 
 #include <stdio.h> //debug
 
@@ -14,11 +17,37 @@ typedef enum{
     selectQUIT
 }CURSOR;
 
+#define OBJLEN 10
+
+static double objs[OBJLEN][6] = {
+    {0.0,0.0,0.0,0.0,0.0,0.0},
+    {0.0,0.0,0.0,0.0,0.0,0.0},
+    {0.0,0.0,0.0,0.0,0.0,0.0},
+    {0.0,0.0,0.0,0.0,0.0,0.0},
+    {0.0,0.0,0.0,0.0,0.0,0.0},
+    {0.0,0.0,0.0,0.0,0.0,0.0},
+    {0.0,0.0,0.0,0.0,0.0,0.0},
+    {0.0,0.0,0.0,0.0,0.0,0.0},
+    {0.0,0.0,0.0,0.0,0.0,0.0},
+    {0.0,0.0,0.0,0.0,0.0,0.0},
+};
+
 static CURSOR cursor = selectGAME;
 
 // ゲーム開始時に実行する
 static void menu_init(void){
     printf("now menu initialize.\n");
+    srand((unsigned)time(NULL));
+    int i;
+    for(i=0;i<OBJLEN;i++){
+        objs[i][0] = (double)rand()/RAND_MAX*40.0-20.0;
+        objs[i][1] = (double)rand()/RAND_MAX*40.0-20.0;
+        objs[i][2] = (double)rand()/RAND_MAX*-20.0;
+        objs[i][3] = (double)rand()/RAND_MAX*180.0;
+        objs[i][4] = (double)rand()/RAND_MAX*180.0;
+        objs[i][5] = (double)rand()/RAND_MAX*180.0;
+        printf("%lf,%lf,%lf\n",objs[i][0],objs[i][1],objs[i][2]);
+    }
 }
 
 // ゲームを終わる時に実行する
@@ -62,26 +91,85 @@ void menu_disp(void){
         MENU_INIT_FLAG = FINISHED;
     }
 
+    // background
     glViewport(viewport_start_x,viewport_start_y,viewport_width,viewport_height);
-
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(40.0, (double)viewport_width / (double)viewport_height, 1.0, 100.0);
-
+    gluPerspective(40.0, (double)viewport_width / (double)viewport_height, 1.0, 30.0);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
+    gluLookAt(0.0,0.0,10.0,0.0,0.0,0.0,0.0,1.0,0.0);
+    int i;
+    for(i=0;i<OBJLEN;i++){
+        glPushMatrix();
+        objs[i][1] -= 0.7;
+        objs[i][3] += 3.0;
+        objs[i][4] += 3.0;
+        objs[i][5] += 3.0;
+        if(objs[i][1]<-20.0){
+            objs[i][0] = (double)rand()/RAND_MAX*40-20;
+            objs[i][1] = 20.0;
+            objs[i][2] = (double)rand()/RAND_MAX*-20;
+            objs[i][3] = (double)rand()/RAND_MAX*180;
+            objs[i][4] = (double)rand()/RAND_MAX*180;
+            objs[i][5] = (double)rand()/RAND_MAX*180;
+        }
+        glTranslatef(objs[i][0],objs[i][1],objs[i][2]);
+        glRotated(objs[i][3],1.0,0.0,0.0);
+        glRotated(objs[i][4],0.0,1.0,0.0);
+        glRotated(objs[i][5],0.0,0.0,1.0);
+        glutSolidCube(1);
+        glPopMatrix();
+    }
 
+    // title
+    glViewport(viewport_start_x+viewport_width/2-viewport_height/3,viewport_start_y+viewport_height*2/3,
+                viewport_height*2/3,viewport_height/6);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(0.0,4.0,0.0,1.0,0.0,1.0);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    gluLookAt(0.0,0.0,0.0,0.0,0.0,-1.0,0.0,1.0,0.0);
+    glColor3d(0.4,0.1,0.7);
+    glDisable(GL_LIGHTING);
+    glBegin(GL_POLYGON);
+    glVertex3d(0.0,0.0,-0.01);
+    glVertex3d(4.0,0.0,-0.01);
+    glVertex3d(4.0,1.0,-0.01);
+    glVertex3d(0.0,1.0,-0.01);
+    glEnd();
+    glEnable(GL_LIGHTING);
     glColor3d(1.0,1.0,1.0);
-    printString("menu",620,300);
+    drawTitle(0.0,0.5,0.0,0,0.0);
+
+    // menu
+    glViewport(viewport_start_x+viewport_width/2+viewport_height/9,viewport_start_y+viewport_height/9,
+                viewport_height*4/9,viewport_height*4/9);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(0.0,5.0,0.0,5.0,0.0,1.0);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    gluLookAt(0.0,0.0,0.0,0.0,0.0,-1.0,0.0,1.0,0.0);
+    glColor3d(0.8,0.3,0.7);
+    glDisable(GL_LIGHTING);
+    glBegin(GL_POLYGON);
+    glVertex3d(0.0,0.0,-0.01);
+    glVertex3d(5.0,0.0,-0.01);
+    glVertex3d(5.0,5.0,-0.01);
+    glVertex3d(0.0,5.0,-0.01);
+    glEnd();
+    glEnable(GL_LIGHTING);
     if(cursor == selectGAME)    glColor3d(0.9,0.9,0.4);
-    else                        glColor3d(0.4,0.4,0.4);
-    printString("game start : press g key",630,320);
+    else                        glColor3d(0.1,0.1,0.1);
+    drawGameStart(0.0,4.0,0.0,0,0.0);
     if(cursor == selectRANKING)   glColor3d(0.9,0.9,0.4);
-    else                        glColor3d(0.4,0.4,0.4);
-    printString("score ranking : press s key",630,340);
+    else                        glColor3d(0.1,0.1,0.1);
+    drawRanking(0.0,3.0,0.0,0,0.0);
     if(cursor == selectQUIT)    glColor3d(0.9,0.9,0.4);
-    else                        glColor3d(0.4,0.4,0.4);
-    printString("quit : press q key",630,360);
+    else                        glColor3d(0.1,0.1,0.1);
+    drawExit(0.0,2.0,0.0,0,0.0);
 
     glutSwapBuffers();
 }
