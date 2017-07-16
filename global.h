@@ -6,6 +6,7 @@ typedef enum{
     MENU,
     SELECTOR,
     GAME,
+    GAME_OVER,
     RANKING
 }STATE;
 

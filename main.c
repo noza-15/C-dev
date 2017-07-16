@@ -48,6 +48,8 @@ void display(void) {
         case GAME:
             game_disp();
             break;
+        case GAME_OVER:
+            break;
         case RANKING:
             ranking_disp();
             break;
@@ -76,7 +78,7 @@ void reshape(int width, int height) {
 // キーボードの入力があった時に呼び出される関数
 void keyboard(unsigned char key, int x, int y) {
     if (key == '\033' || key == 'q') { // とりあえずescを押すと終了
-        printf("aplication end.\n");
+        printf("application end.\n");
         exit(0);
     }
     switch (state) {
@@ -88,6 +90,9 @@ void keyboard(unsigned char key, int x, int y) {
             break;
         case GAME:
             game_keyboard(key, x, y);
+            break;
+        case GAME_OVER:
+            over_keyboard(key, x, y);
             break;
         case RANKING:
             ranking_keyboard(key, x, y);
@@ -107,6 +112,8 @@ void special(int key, int x, int y) {
         case GAME:
             game_special(key, x, y);
             break;
+        case GAME_OVER:
+            break;
         case RANKING:
             ranking_special(key, x, y);
             break;
@@ -124,6 +131,8 @@ void mouse(int button, int mouse_state, int x, int y) {
             break;
         case GAME:
             game_mouse(button, mouse_state, x, y);
+            break;
+        case GAME_OVER:
             break;
         case RANKING:
             ranking_mouse(button, mouse_state, x, y);
@@ -143,6 +152,8 @@ void motion(int x, int y) {
         case GAME:
             game_motion(x, y);
             break;
+        case GAME_OVER:
+            break;
         case RANKING:
             ranking_motion(x, y);
             break;
@@ -160,6 +171,8 @@ void passiveMotion(int x, int y) {
             break;
         case GAME:
             game_passiveMotion(x, y);
+            break;
+        case GAME_OVER:
             break;
         case RANKING:
             ranking_passiveMotion(x, y);
@@ -186,7 +199,7 @@ void init(void) {
 // メイン関数
 int main(int argc, char *argv[]) {
 
-    printf("aplication start.\n");
+    printf("application start.\n");
 
     glutInitWindowSize(INITIAL_WIDTH, INITIAL_HHEIGHT);   // 最初に出るウィンドウのサイズは 1280x720 なんとなくこれ
     glutInitWindowPosition(0, 40);   // ウィンドウの出現位置は(0,40) なんとなくこれ

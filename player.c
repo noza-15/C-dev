@@ -7,8 +7,8 @@ static int jumped_frame = -1;          // player object
 static double jump_v = 0;        // player object
 static double jump_z = 0;        // player object
 
-#define GRAVITY    17.0             // player object
-#define JUMP_POWER 13.0             // player object
+#define GRAVITY    10.8             // player object
+#define JUMP_POWER 10.0             // player object
 
 // 前回のジャンプからの経過時間 player object
 static double getJumpTime(void) {
@@ -20,7 +20,20 @@ static double getJumpTime(void) {
 
 // ジャンプした時 player object interface
 void jump(void) {
+//void jump(double v) {
     double second = getJumpTime();
+//    jump_z += v;
+//    jump_v = v;
+//    if (jump_z > 0) {
+//        jump_v -= 0.01;
+//        jump_z += jump_v;
+//        if (jump_z <= 0) {
+//            jump_z = 0;
+//            jump_v = 0;
+//        }
+//    }
+
+
     if (jumped_frame < 0) { // 初めてのジャンプなら
         jump_z = 0.0;
         jump_v = JUMP_POWER;
@@ -28,6 +41,7 @@ void jump(void) {
         jump_z = jump_z + jump_v * second - GRAVITY / 2.0 * second * second;
         jump_v = jump_v - GRAVITY * second + JUMP_POWER;
     }
+
     jumped_frame = frame_count;
 }
 
@@ -67,7 +81,7 @@ void renderPlayer(void) {
     glRotated(0.0, 0.0, 0.0, 1.0);  // z軸回転行列をかける
     glutSolidCube(1);               // モデルの描画
     glPopMatrix();                  // 変換行列を記憶した行列に戻す
-    
+
 }
 
 void endPlayer(void) {

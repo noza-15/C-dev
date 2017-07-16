@@ -3,6 +3,7 @@
 #define _PLAYER_H_
 
 void jump(void);
+//void jump(double);
 double getPlayerPosition(void);
 
 void initPlayer(void);
