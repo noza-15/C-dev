@@ -1,5 +1,4 @@
 ﻿
-#include <stdlib.h>
 #include <GL/glut.h>
 #include <math.h>
 #include "global.h"
@@ -7,6 +6,7 @@
 #include "player.h"
 #include "obstacle.h"
 #include "background.h"
+#include "score.h"
 
 #include <stdio.h> // debug
 
@@ -33,6 +33,9 @@ static int motion_x;                // developper camera
 static int motion_y;                // developper camera
 
 static int game_over_flag;          // game system
+
+static int score;
+static int game_start_frame = 0;
 
 static void updateDevCam(void) {
     const double speed = 0.00007;
@@ -256,7 +259,28 @@ static void renderAll(int width, int height) {
     renderPlayer();
     renderObstacles();
     renderBackground();
+	renderScore();
 }
+
+static void renderScore() {
+	score  +=getWave();
+	char buf[64];
+	glColor3d(1, 0, 0);
+	sprintf_s(buf, sizeof(buf),"score %d", score);
+	printString(buf, window_width - 100, 20);
+	
+	if ((frame_count - game_start_frame) % 300 == 0)changeWave();
+	sprintf_s(buf, sizeof(buf), "WAVE: %d", getWave());
+	printString(buf, window_width - 100, 40);
+
+}
+
+static void resetScore() {
+	game_start_frame = frame_count;
+	score = 0;
+	resetWave();
+}
+
 
 // ゲームオーバー画面の描画
 void over_disp(void) {
@@ -319,6 +343,8 @@ void game_disp(void) {
         printString("Press x key to developer mode", 30, 30);
         printString("Press UP key to start and jump", 30, 60);
         glEnable(GL_LIGHTING);
+
+		
 
         glViewport(viewport_start_x, viewport_start_y,
                    viewport_width, viewport_height);
@@ -388,12 +414,14 @@ void over_keyboard(unsigned char key, int x, int y) {
             game_over_flag = OFF;
             initPlayer();
             state = GAME;
+			resetScore();
             break;
         case 'r':
             printf("I want to restart!\n");
             game_exit();
             GAME_INIT_FLAG = UNFINISHED;
             srand(1);
+			resetScore();
             state = SELECTOR;
             break;
     }

@@ -20,12 +20,15 @@ static double* huga_init(double z) {
 }
 
 static void render_crash_wire(double* param) {
-    glBegin(GL_LINE_LOOP);
-    glVertex3d(param[0] + param[3], param[5], 0);
-    glVertex3d(param[0] + param[3], param[6], 0);
-    glVertex3d(param[0] + param[4], param[6], 0);
-    glVertex3d(param[0] + param[4], param[5], 0);
-    glEnd();
+	glDisable(GL_LIGHTING);
+	glColor3d(1.0, 1.0, 0);
+	glBegin(GL_LINE_LOOP);
+	glVertex3d(param[0] + param[3], param[5], 0);
+	glVertex3d(param[0] + param[3], param[6], 0);
+	glVertex3d(param[0] + param[4], param[6], 0);
+	glVertex3d(param[0] + param[4], param[5], 0);
+	glEnd();
+	glEnable(GL_LIGHTING);
 
 }
 
@@ -36,7 +39,7 @@ static void huga_render(int birth, double* param, double z) {
     glTranslatef(param[0], param[2], 0.0);
     glDisable(GL_LIGHTING);
     glEnable(GL_NORMALIZE);
-    glColor3d(1, 0.4, 0.4);
+    glColor3d(0.3, 1.0, 0.3);
     glScalef(4 + 3.8*sin(1.0*(frame_count - birth) / 8 + param[1]), 0.5, 0.5);
     //if (frame_count % 3 == 1)printf("%6.4lf\t%6.4lf\n", param[0], param[2]);
     glutSolidCube(1);

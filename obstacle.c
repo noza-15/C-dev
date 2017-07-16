@@ -29,9 +29,12 @@ static int residentList_end;
 
 #define MAX_RESIDENT 100    // 存在して良い障害物の上限
 
+static int wave=1;
+
 // 確率的に障害物を発生して返す関数
 static resident residentBirth(void) {
-    int i = rand() % OBSTACLE_NUMBER;
+	int i = rand() % ((int)wave /( OBSTACLE_NUMBER-1) + 1);
+	if (i > OBSTACLE_NUMBER-1)i = rand()%(OBSTACLE_NUMBER);
     //int i = 0;
     resident x;
     double z = getPlayerPosition();
@@ -45,7 +48,7 @@ static resident residentBirth(void) {
 // 確率や条件的に障害物を発生させるかさせないかを決めて障害物リストを更新する関数
 // 消したり生成したり
 void refreshResidents(void) {
-    if (frame_count % 70 == 0) {
+    if (frame_count % (100-(int)(wave/2)*12) == 0) {
         residentList[residentList_end++] = residentBirth();
     }
     int j;
@@ -71,9 +74,9 @@ int judgeCollision(double z) {
 // 障害物の初期化
 void initObstacles(void) {
     ObstacleDefenition = malloc(sizeof(Obstacle) * OBSTACLE_NUMBER);
-    ObstacleDefenition[0] = getHogeDefinition();
+    ObstacleDefenition[0] = getSpeedDefinition();
     ObstacleDefenition[1] = getHugaDefinition();
-    ObstacleDefenition[2] = getSpeedDefinition();
+    ObstacleDefenition[2] = getHogeDefinition();
     ObstacleDefenition[3] = getMissileDefinition();
     residentList = malloc(sizeof(resident) * 100);
     residentList_start = 0;
@@ -94,4 +97,17 @@ void renderObstacles(void) {
 // 障害物の終了
 void endObstacles(void) {
     free(residentList);
+}
+
+void changeWave(void) {
+	wave+=1;
+	if (wave > 15)wave = 15;
+}
+
+int getWave(void) {
+	return wave;
+}
+
+void resetWave() {
+	wave = 1;
 }

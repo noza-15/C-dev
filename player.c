@@ -9,7 +9,7 @@ static double jump_v = 0;        // player object
 static double jump_z = 0;        // player object
 static double jump_z0 = 0;        // player object
 
-#define GRAVITY    9.8             // player object
+#define GRAVITY    20              // player object
 #define JUMP_POWER 7.0             // player object
 
 // 前回のジャンプからの経過時間 player object

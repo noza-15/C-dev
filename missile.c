@@ -23,12 +23,15 @@ static double* missile_init(double z) {
 }
 
 static void render_crash_wire(double* param) {
+	glDisable(GL_LIGHTING);
+	glColor3d(1.0, 1.0, 0);
     glBegin(GL_LINE_LOOP);
-    glVertex3d( param[3], param[5], 0);
-    glVertex3d(param[3], param[6], 0);
-    glVertex3d(param[4], param[6], 0);
-    glVertex3d(param[4], param[5], 0);
+	glVertex3d(param[0] + param[3], param[5], 0);
+	glVertex3d(param[0] + param[3], param[6], 0);
+	glVertex3d(param[0] + param[4], param[6], 0);
+	glVertex3d(param[0] + param[4], param[5], 0);
     glEnd();
+	glEnable(GL_LIGHTING);
 
 }
 
@@ -47,7 +50,7 @@ static void missile_render(int birth, double* param, double z) {
     glTranslatef(param[0], param[2], 0.0);
     glDisable(GL_LIGHTING);
     glEnable(GL_NORMALIZE);
-    glColor3d(1, 0.4, 0.4);
+    glColor3d(0.9, 0.9, 0.9);
     glScalef(0.3, 0.3, 0.3);
     glutSolidDodecahedron();
     glEnable(GL_LIGHTING);
@@ -63,12 +66,12 @@ static void missile_render(int birth, double* param, double z) {
 // missileがプレイヤーと衝突したか調べる関数
 static int missile_judge(int birth, double* param, double z) {
 
-    param[3] = param[0]+ 0.4;
-    param[4] = param[0]- 0.4;
+    param[3] = + 0.4;
+    param[4] = - 0.4;
     param[5] = param[2] - 0.4;
     param[6] = param[2] + 0.4;
 
-    if (param[4]<0 && param[3]>0 && z>param[5] && z<param[6])return 1;
+	if (param[0] - 0.5<param[4] && param[0] + 0.5>param[3] && z>param[5] && z<param[6])return 1;
     return 0;
 }
 
