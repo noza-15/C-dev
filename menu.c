@@ -77,13 +77,13 @@ void menu_disp(void) {
 
     if (cursor == selectGAME) glColor3d(0.9, 0.9, 0.4);
     else glColor3d(0.4, 0.4, 0.4);
-    printString("game start : press g key", 630, 320);
+    printString("Game start : Press g key", 630, 320);
     if (cursor == selectRANKING) glColor3d(0.9, 0.9, 0.4);
     else glColor3d(0.4, 0.4, 0.4);
-    printString("score ranking : press s key", 630, 340);
+    printString("Score ranking : Press s key", 630, 340);
     if (cursor == selectQUIT) glColor3d(0.9, 0.9, 0.4);
     else glColor3d(0.4, 0.4, 0.4);
-    printString("quit : press q key", 630, 360);
+    printString("Quit : Press q key", 630, 360);
 
     glutSwapBuffers();
 }

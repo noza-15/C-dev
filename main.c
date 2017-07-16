@@ -4,15 +4,10 @@
 #include <GL/glut.h>
 
 #include "global.h"
-
 #include "menu.h"
 #include "selector.h"
 #include "game.h"
 #include "ranking.h"
-
-#define INITIAL_WIDTH 1280
-#define INITIAL_HHEIGHT 720
-#define GAME_NAME "myapp"
 
 /* グローバル変数の宣言 */
 int window_width;
@@ -174,6 +169,7 @@ void passiveMotion(int x, int y) {
             game_passiveMotion(x, y);
             break;
         case GAME_OVER:
+            over_passiveMotion(x, y);
             break;
         case RANKING:
             ranking_passiveMotion(x, y);
@@ -192,7 +188,7 @@ void init(void) {
     glEnable(GL_LIGHT0);                // 光源を1個使う
 
     window_width = INITIAL_WIDTH;
-    window_height = INITIAL_HHEIGHT;
+    window_height = INITIAL_HEIGHT;
     refresh_msec = INITIAL_MSEC;
     state = MENU;
 }
@@ -202,7 +198,7 @@ int main(int argc, char *argv[]) {
 
     printf("application start.\n");
 
-    glutInitWindowSize(INITIAL_WIDTH, INITIAL_HHEIGHT);   // 最初に出るウィンドウのサイズは 1280x720 なんとなくこれ
+    glutInitWindowSize(INITIAL_WIDTH, INITIAL_HEIGHT);   // 最初に出るウィンドウのサイズは 1280x720 なんとなくこれ
     glutInitWindowPosition(0, 40);   // ウィンドウの出現位置は(0,40) なんとなくこれ
     glutInit(&argc, argv);          // glutの初期化
     glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH | GLUT_DOUBLE);    // 色と奥行きとダブルバッファリング

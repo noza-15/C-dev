@@ -264,9 +264,9 @@ void over_disp(void) {
     printString("GAME OVER...", 30, 30);
     printString("Press c key to continue.", 30, 60);
     printString("Press r key to restart.", 30, 80);
-    printString("Press b key to go back menu.", 30, 100);
+    printString("Press b key to go back to menu.", 30, 100);
     glEnable(GL_LIGHTING);
-    glViewport(viewport_start_x,viewport_start_y,viewport_width,viewport_height);
+    glViewport(viewport_start_x, viewport_start_y, viewport_width, viewport_height);
     glutSwapBuffers();
 }
 
@@ -277,13 +277,13 @@ void game_disp(void) {
         game_init();
         GAME_INIT_FLAG = FINISHED;
     }
-
-    game_refresh();                 // ゲームの内部状態を更新
-
-    if (DEVELOPPE_MODE == ON && game_over_flag == OFF) {       // 開発者モードなら
+    // ゲームの内部状態を更新
+    game_refresh();
+    // 開発者モードなら
+    if (DEVELOPPE_MODE == ON && game_over_flag == OFF) {
         glDisable(GL_LIGHTING);
         glColor3d(0.9, 0.3, 0.3);
-        printString("press x key to exit developer mode", 30, 30);
+        printString("Press x key to exit developer mode", 30, 30);
         glEnable(GL_LIGHTING);
 
         // 左半分に描画するよう設定
@@ -315,8 +315,8 @@ void game_disp(void) {
     } else if (game_over_flag == OFF) {                          // 開発者モードでないなら
         glDisable(GL_LIGHTING);
         glColor3d(0.9, 0.3, 0.3);
-        printString("press x key to developer mode", 30, 30);
-        printString("press UP key to start and jump", 30, 60);
+        printString("Press x key to developer mode", 30, 30);
+        printString("Press UP key to start and jump", 30, 60);
         glEnable(GL_LIGHTING);
 
         glViewport(viewport_start_x, viewport_start_y,
@@ -349,10 +349,10 @@ void game_keyboard(unsigned char key, int x, int y) {
             jump();
             break;
         case 'e':
-            state = GAME_OVER;
+//            state = GAME_OVER;
             break;
         case 'o':
-            if (DEVELOPPE_MODE == ON) game_over_flag = ON;
+            if (DEVELOPPE_MODE == ON) state = GAME_OVER;
             break;
         case 'x':
             printf("push x\n");
@@ -437,4 +437,7 @@ void game_passiveMotion(int x, int y) {
             wrap = 0;
         }
     }
+}
+
+void over_passiveMotion(int x, int y) {
 }

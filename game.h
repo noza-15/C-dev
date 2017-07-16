@@ -10,5 +10,6 @@ void game_special(int, int, int);
 void game_mouse(int, int, int, int);
 void game_motion(int, int);
 void game_passiveMotion(int, int);
+void over_passiveMotion(int, int);
 
 #endif // _GAME_H_
