@@ -11,4 +11,6 @@ void game_mouse(int, int, int, int);
 void game_motion(int, int);
 void game_passiveMotion(int, int);
 void over_passiveMotion(int, int);
+void adjust_aspect(int width, int height);
+
 #endif // _GAME_H_

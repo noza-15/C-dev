@@ -7,5 +7,7 @@ double getPlayerPosition(void);
 void initPlayer(void);
 void renderPlayer(void);
 void endPlayer(void);
+int getModelNum(void);
+void changeModel(void);
 
 #endif // _PLAYER_H_

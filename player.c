@@ -78,8 +78,12 @@ void renderPlayer(void) {
 		glutSolidCube(0.8);               // モデルの描画
 		break;
 	case 1:
+		glScalef(0.5, 0.5, 0.5);
+		glutWireIcosahedron();
 		break;
 	case 2:
+		glScalef(0.3, 0.3, 0.3);
+		glutWireDodecahedron();
 		break;
 	default:
 		break;
@@ -90,4 +94,14 @@ void renderPlayer(void) {
 
 void endPlayer(void) {
 
+}
+
+int getModelNum() {
+	return modelNum;
+}
+
+void changeModel() {
+	modelNum++;
+	if (modelNum == 3)modelNum =0;
+	printf("%d",modelNum);
 }
