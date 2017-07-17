@@ -270,15 +270,15 @@ static void renderAll(int width, int height) {
 }
 
 //スコアの表示
-static void renderScore() {
+void renderScore() {
 	score  +=getWave();
 	char buf[100];
 	glColor3d(1, 0, 0);
-	sprintf_s(buf, sizeof(buf),"score %d", score);
+	sprintf(buf,"score %d", score);
 	printString(buf, window_width - 120, 20);
 
 	if ((frame_count - game_start_frame) % 200 == 0)changeWave();
-	sprintf_s(buf, sizeof(buf), "WAVE: %d", getWave());
+	sprintf(buf, "WAVE: %d", getWave());
 	printString(buf,
 		window_width/2 +rand() % (1+getWave()*getWaveChangedFlag()),
 		window_height/2+40+rand()%(1+ getWave() * getWaveChangedFlag()));
@@ -286,14 +286,14 @@ static void renderScore() {
 	int spawn_time = (int)(100.0*pow(0.9, getWave()));
 	int remain =  frame_count % spawn_time;
 
-	sprintf_s(buf, sizeof(buf), "respawn:");
+	sprintf(buf, "respawn:");
 	for (int i = 0; i < spawn_time; i++)
 	{
 		if (i > remain) {
-			strcat_s(buf, sizeof(buf), "_");
+			strcat(buf, "_");
 		}
 		else{
-			strcat_s(buf, sizeof(buf), "=");
+			strcat(buf, "=");
 		}
 	}
 
@@ -318,7 +318,7 @@ void over_disp(void) {
     printString("Press r key to restart.", 30, 80);
     printString("Press b key to go back to menu.", 30, 100);
 	char buf[64];
-	sprintf_s(buf, sizeof(buf), "score %d", score);
+	sprintf(buf, "score %d", score);
 	printString(buf,
 		window_width / 2 + rand() % (1 + 3 * getWaveChangedFlag()),
 		window_height / 2 + 40 + rand() % (1 + 3 * getWaveChangedFlag()));
