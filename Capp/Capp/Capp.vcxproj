@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -19,35 +19,34 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{12BF3FFD-E785-4DEC-A8F8-12DCDE206828}</ProjectGuid>
-    <RootNamespace>Project1</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
+    <ProjectGuid>{D72FF1BC-1AA0-4B13-AB66-01FA731C3675}</ProjectGuid>
+    <RootNamespace>Capp</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -111,7 +110,36 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\..\Sync waseda\5_Cアプリケーションデベロップメント\kadai\main.c" />
+    <ClCompile Include="..\..\background.c" />
+    <ClCompile Include="..\..\game.c" />
+    <ClCompile Include="..\..\hoge.c" />
+    <ClCompile Include="..\..\huga.c" />
+    <ClCompile Include="..\..\main.c" />
+    <ClCompile Include="..\..\menu.c" />
+    <ClCompile Include="..\..\missile.c" />
+    <ClCompile Include="..\..\obstacle.c" />
+    <ClCompile Include="..\..\player.c" />
+    <ClCompile Include="..\..\ranking.c" />
+    <ClCompile Include="..\..\raw_data.c" />
+    <ClCompile Include="..\..\score.c" />
+    <ClCompile Include="..\..\selector.c" />
+    <ClCompile Include="..\..\speed.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\background.h" />
+    <ClInclude Include="..\..\game.h" />
+    <ClInclude Include="..\..\global.h" />
+    <ClInclude Include="..\..\hoge.h" />
+    <ClInclude Include="..\..\huga.h" />
+    <ClInclude Include="..\..\menu.h" />
+    <ClInclude Include="..\..\missile.h" />
+    <ClInclude Include="..\..\obstacle.h" />
+    <ClInclude Include="..\..\player.h" />
+    <ClInclude Include="..\..\ranking.h" />
+    <ClInclude Include="..\..\raw_data.h" />
+    <ClInclude Include="..\..\score.h" />
+    <ClInclude Include="..\..\selector.h" />
+    <ClInclude Include="..\..\speed.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
