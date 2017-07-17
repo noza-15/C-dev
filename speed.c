@@ -14,7 +14,7 @@ static double* speed_init(double z) {
     p = malloc(sizeof(double) * 7);
     p[0] = 15;//敵の座標
     p[1] = 0;//移動の傾き
-    p[2] = 6.0*rand() / RAND_MAX - 3;//z座標の初期値
+	p[2] = 10.0*rand() / RAND_MAX - 5;//z座標の初期値
 	p[3] = 0;//xの判定開始地点
 	p[4] = 0;//xの判定終了地点
 	p[5] = 0;//zの判定開始地点

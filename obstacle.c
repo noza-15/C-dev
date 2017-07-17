@@ -1,5 +1,6 @@
 ﻿
 #include <stdlib.h>
+#include <math.h>
 #include "global.h"
 #include "obstacle.h"
 #include "player.h"
@@ -49,7 +50,7 @@ static resident residentBirth(void) {
 // 確率や条件的に障害物を発生させるかさせないかを決めて障害物リストを更新する関数
 // 消したり生成したり
 void refreshResidents(void) {
-    if (frame_count % (100-(int)(wave/2)*12) == 0) {
+    if (frame_count % ((int)(100.0*pow(0.9, getWave()))) == 0) {
         residentList[residentList_end++] = residentBirth();
     }
     int j;
