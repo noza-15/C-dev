@@ -1,4 +1,5 @@
-﻿#include <stdlib.h>
+﻿
+#include <stdlib.h>
 #include <GL/glut.h>
 #include <math.h>
 #include <string.h>
@@ -275,13 +276,13 @@ static void renderScore() {
 	glColor3d(1, 0, 0);
 	sprintf_s(buf, sizeof(buf),"score %d", score);
 	printString(buf, window_width - 120, 20);
-	
+
 	if ((frame_count - game_start_frame) % 200 == 0)changeWave();
 	sprintf_s(buf, sizeof(buf), "WAVE: %d", getWave());
 	printString(buf,
 		window_width/2 +rand() % (1+getWave()*getWaveChangedFlag()),
 		window_height/2+40+rand()%(1+ getWave() * getWaveChangedFlag()));
-	
+
 	int spawn_time = (int)(100.0*pow(0.9, getWave()));
 	int remain =  frame_count % spawn_time;
 
@@ -375,7 +376,7 @@ void game_disp(void) {
         printString("Press UP key to start and jump", 30, 60);
         glEnable(GL_LIGHTING);
 
-		
+
 
         glViewport(viewport_start_x, viewport_start_y,
                    viewport_width, viewport_height);

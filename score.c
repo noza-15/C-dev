@@ -1,3 +1,4 @@
+﻿
 #include "score.h"
 #include "game.h"
 #include "global.h"
