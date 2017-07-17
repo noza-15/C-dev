@@ -269,16 +269,65 @@ static void renderAll(int width, int height) {
 	renderScore();
 }
 
+/////////////////////////////////////////////////////////////////////////////////
+#ifndef _MSC_VER
+
+//スコアの表示
+void renderScore(){
+    score += getWave();
+    char buf[100];
+    glColor3d(1, 0, 0);
+    sprintf(buf,"score %d", score);
+    printString(buf, window_width - 120, 20);
+
+    if ((frame_count - game_start_frame) % 200 == 0)changeWave();
+    sprintf(buf, "WAVE: %d", getWave());
+    printString(buf,
+        window_width/2 +rand() % (1+getWave()*getWaveChangedFlag()),
+        window_height/2+40+rand()%(1+ getWave() * getWaveChangedFlag()));
+
+    int spawn_time  = (int)(100.0*pow(0.9, getWave()));
+    int remain      = frame_count % spawn_time;
+
+    sprintf(buf, "respawn:");
+    for(int i = 0; i < spawn_time; i++){
+        if(i > remain)  strcat(buf, "_");
+        else            strcat(buf, "=");
+    }
+    printString(buf,10,window_height-10);
+}
+
+// ゲームオーバー画面の描画
+void over_disp(void) {
+    glDisable(GL_LIGHTING);
+    glColor3d(1.0, 0.0, 0.0);
+    printString("GAME OVER...", 30, 30);
+    printString("Press c key to continue.", 30, 60);
+    printString("Press r key to restart.", 30, 80);
+    printString("Press b key to go back to menu.", 30, 100);
+    char buf[64];
+    sprintf(buf, "score %d", score);
+    printString(buf,
+        window_width / 2 + rand() % (1 + 3 * getWaveChangedFlag()),
+        window_height / 2 + 40 + rand() % (1 + 3 * getWaveChangedFlag()));
+    glEnable(GL_LIGHTING);
+    glViewport(viewport_start_x, viewport_start_y, viewport_width, viewport_height);
+    glutSwapBuffers();
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+#else
+
 //スコアの表示
 void renderScore() {
 	score  +=getWave();
 	char buf[100];
 	glColor3d(1, 0, 0);
-	sprintf(buf,"score %d", score);
+	sprintf_s(buf, sizeof(buf),"score %d", score);
 	printString(buf, window_width - 120, 20);
 
 	if ((frame_count - game_start_frame) % 200 == 0)changeWave();
-	sprintf(buf, "WAVE: %d", getWave());
+	sprintf_s(buf, sizeof(buf), "WAVE: %d", getWave());
 	printString(buf,
 		window_width/2 +rand() % (1+getWave()*getWaveChangedFlag()),
 		window_height/2+40+rand()%(1+ getWave() * getWaveChangedFlag()));
@@ -286,28 +335,20 @@ void renderScore() {
 	int spawn_time = (int)(100.0*pow(0.9, getWave()));
 	int remain =  frame_count % spawn_time;
 
-	sprintf(buf, "respawn:");
+	sprintf_s(buf, sizeof(buf), "respawn:");
 	for (int i = 0; i < spawn_time; i++)
 	{
 		if (i > remain) {
-			strcat(buf, "_");
+			strcat_s(buf, sizeof(buf), "_");
 		}
 		else{
-			strcat(buf, "=");
+			strcat_s(buf, sizeof(buf), "=");
 		}
 	}
 
 	printString(buf,10,window_height-10);
 
 }
-
-//スコア計算のリセット
-static void resetScore() {
-	game_start_frame = frame_count;
-	score = 0;
-	resetWave();
-}
-
 
 // ゲームオーバー画面の描画
 void over_disp(void) {
@@ -318,13 +359,23 @@ void over_disp(void) {
     printString("Press r key to restart.", 30, 80);
     printString("Press b key to go back to menu.", 30, 100);
 	char buf[64];
-	sprintf(buf, "score %d", score);
+	sprintf_s(buf, sizeof(buf), "score %d", score);
 	printString(buf,
 		window_width / 2 + rand() % (1 + 3 * getWaveChangedFlag()),
 		window_height / 2 + 40 + rand() % (1 + 3 * getWaveChangedFlag()));
     glEnable(GL_LIGHTING);
     glViewport(viewport_start_x, viewport_start_y, viewport_width, viewport_height);
     glutSwapBuffers();
+}
+
+#endif // __STDC_ANALYZABLE__
+//////////////////////////////////////////////////////////////////////////////////
+
+//スコア計算のリセット
+static void resetScore() {
+	game_start_frame = frame_count;
+	score = 0;
+	resetWave();
 }
 
 // ゲーム状態で呼び出される描画関数
