@@ -1,6 +1,7 @@
 ﻿
 #include <stdlib.h>
 #include <GL/glut.h>
+#include <math.h>
 #include "global.h"
 #include "ranking.h"
 #include "raw_data.h"
@@ -41,13 +42,15 @@ Material emerald  = {   {0.31175,    0.9745,   0.31175,  1.0},
                         { 0.626959,0.727811, 0.626959,  1.0},
                         76.8                                    };
 
-//
+// 背景
 #define POSMAX 36
 #define SHIFT  0.4
 #define SPEED  0.007
 double pos[POSMAX] = {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0};
 
 // コンテンツの中身
+#define SCORELEN 5
+char str[SCORELEN][20] = {"1, A.B : 20","1, A.B : 20","1, A.B : 20","1, A.B : 20","1, A.B : 20"};
 
 // ゲーム開始時に実行する
 static void ranking_init(void){
@@ -66,7 +69,6 @@ static void ranking_init(void){
         glLightfv(GL_LIGHT0, GL_AMBIENT, light0.ambient);
         glLightfv(GL_LIGHT0, GL_DIFFUSE, light0.diffuse);
         glLightfv(GL_LIGHT0, GL_SPECULAR, light0.specular);
-
         glLightfv(GL_LIGHT0, GL_POSITION, light0.position);
         glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, light0.direction);
     }
@@ -148,6 +150,14 @@ void ranking_disp(void){
         RANKING_INIT_FLAG = FINISHED;
     }
 
+    float x = 10.0*cos(frame_count*0.03);
+    float y = 10.0*sin(frame_count*0.03);
+
+    float lp[4] = {x, y, 20.0, 1.0};  // spot light position
+    float ld[3] = {-x, -y, -1.0};       // direction
+    glLightfv(GL_LIGHT0, GL_POSITION, lp);
+    glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, ld);
+
     // background
     glViewport(viewport_start_x,viewport_start_y,viewport_width,viewport_height);
     glMatrixMode(GL_PROJECTION);
@@ -199,8 +209,12 @@ void ranking_disp(void){
     glLoadIdentity();
     gluLookAt(0.0,0.0,0.0,0.0,0.0,-1.0,0.0,1.0,0.0);
     glColor3d(0.2,0.2,0.2);
-    glDisable(GL_LIGHTING);
+    glMaterialfv(GL_FRONT, GL_AMBIENT, ruby.ambient);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, ruby.diffuse);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, ruby.specular);
+    glMaterialfv(GL_FRONT, GL_SHININESS, &ruby.shininess);
     glBegin(GL_POLYGON);
+    glNormal3f(0.0,0.0,1.0);
     glVertex3d(0.0,0.0,-0.01);
     glVertex3d(4.0,0.0,-0.01);
     glVertex3d(4.0,1.0,-0.01);
@@ -211,8 +225,7 @@ void ranking_disp(void){
     drawRanking(0.0,0.55,0.0,0,0.0);
 
 
-    // ページコンテンツ用変換行列設定
-    // ページコンテンツバック
+    // ページコンテンツback
     glViewport(viewport_start_x+viewport_width/2-viewport_height*4/9,viewport_start_y+viewport_height/9,
                 viewport_height*8/9,viewport_height*5/9);
     glMatrixMode(GL_PROJECTION);
@@ -222,29 +235,24 @@ void ranking_disp(void){
     glLoadIdentity();
     gluLookAt(0.0,0.0,0.0,0.0,0.0,-1.0,0.0,1.0,0.0);
     glColor3d(0.2,0.2,0.2);
-    glDisable(GL_LIGHTING);
+    glMaterialfv(GL_FRONT, GL_AMBIENT, saphire.ambient);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, saphire.diffuse);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, saphire.specular);
+    glMaterialfv(GL_FRONT, GL_SHININESS, &saphire.shininess);
     glBegin(GL_POLYGON);
-    glVertex3d(0.0,0.0,-0.01);
-    glVertex3d(8.0,0.0,-0.01);
-    glVertex3d(8.0,5.0,-0.01);
-    glVertex3d(0.0,5.0,-0.01);
+    glNormal3f(0.0,0.0,1.0);
+    glVertex3d(0.0,0.0,-0.7);
+    glVertex3d(8.0,0.0,-0.7);
+    glVertex3d(8.0,5.0,-0.7);
+    glVertex3d(0.0,5.0,-0.7);
     glEnd();
     glEnable(GL_LIGHTING);
 
     // ページコンテンツ
-
-
-    // いらない
-    glMaterialfv(GL_FRONT, GL_AMBIENT, ruby.ambient);
-    glMaterialfv(GL_FRONT, GL_DIFFUSE, ruby.diffuse);
-    glMaterialfv(GL_FRONT, GL_SPECULAR, ruby.specular);
-    glMaterialfv(GL_FRONT, GL_SHININESS, &ruby.shininess);
-    glBegin(GL_TRIANGLES);
-    glNormal3f(0.0,0.0,1.0);
-    glVertex3d(1.0,1.0,0.0);
-    glVertex3d(2.0,1.0,0.0);
-    glVertex3d(1.0,2.0,0.0);
-    glEnd();
+    glColor3d(0.9,0.9,0.2);
+    for(i=0;i<SCORELEN;i++){
+        printString(str[i],100,100*i+100);
+    }
 
     // メニューに戻る
     glViewport(viewport_start_x,viewport_start_y,viewport_width,viewport_height);
