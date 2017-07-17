@@ -1,5 +1,6 @@
 ﻿
 #include <GL/glut.h>
+#include <math.h>
 #include <stdio.h>
 #include "global.h"
 #include "player.h"
@@ -8,6 +9,7 @@ static int jumped_frame = -1;          // player object
 static double jump_v = 0;        // player object
 static double jump_z = 0;        // player object
 static double jump_z0 = 0;        // player object
+static int modelNum = 0;
 
 #define GRAVITY    20              // player object
 #define JUMP_POWER 7.0             // player object
@@ -57,7 +59,7 @@ void initPlayer(void) {
 // プレイヤーを描画する関数
 void renderPlayer(void) {
 
-    double rad = frame_count / 5.0;
+	double rad = frame_count;// / 5.0;
     double z = getPlayerPosition();         // プレイヤーのz座標を取得
 
     if (z > UPPER_FRAME_OUT || z < LOWER_FRAME_OUT) {
@@ -67,10 +69,21 @@ void renderPlayer(void) {
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();                 // 現在の変換行列を記憶
     glTranslatef(0.0, z, 0.0);      // 平行移動の行列をかける
-    glRotated(0.0, 1.0, 0.0, 0.0);  // x軸回転行列をかける
-    glRotated(rad, 0.0, 1.0, 0.0);  // y軸回転行列をかける
-    glRotated(0.0, 0.0, 0.0, 1.0);  // z軸回転行列をかける
-    glutSolidCube(1);               // モデルの描画
+	glRotatef(180 * sin(1.0*rad / 15), 1.0, 0.0, 0.0);  // x軸回転行列をかける
+    glRotatef(180 * sin(1.0*rad / 45), 0.0, 1.0, 0.0);  // y軸回転行列をかける
+    glRotatef(180 * sin(1.0*rad / 30), 0.0, 0.0, 1.0);  // z軸回転行列をかける
+	switch (modelNum)
+	{
+	case 0:
+		glutSolidCube(0.8);               // モデルの描画
+		break;
+	case 1:
+		break;
+	case 2:
+		break;
+	default:
+		break;
+	}
     glPopMatrix();                  // 変換行列を記憶した行列に戻す
 
 }
