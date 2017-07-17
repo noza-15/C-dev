@@ -1,38 +1,11 @@
-# this makefile is for macOS users
+CC      = gcc
+CFLAGS  = -O3
+LIBS    = -lGL -lGLU -lglut -lm
+OBJS    = main.o game.o hoge.o menu.o obstacle.o ranking.o selector.o huga.o missile.o speed.o background.o player.o raw_data.o score.o
+PROGRAM = Flappy-Cube
 
-# c compiler is Apple LLVM
-CC	= /usr/bin/gcc
-CFLAGS	= -Wno-deprecated
-LDLIBS	= -framework GLUT -framework OpenGL
-OBJECTS	= $(patsubst %.c,%.o,$(wildcard *.c))
-
-# define the aplication name
-TARGET	= myapp
-
-$(TARGET): $(OBJECTS)
-	$(CC) $^ $(LDLIBS) -o $@
-
-%.o: %.c
-	$(CC) $(CFLAGS) -c -o $*.o $*.c
-
-.PHONY: rebuild clean
-
-rebuild:
-	make clean
-	make
+all:	$(OBJS)
+	$(CC) $(OBJS) $(LIBS) -o $(PROGRAM)
 
 clean:
-	$(RM) $(TARGET) $(OBJECTS)
-
-################################################################################
-
-# macで<GL/glut.h>が使えるようにする
-# !warning : this command is dangerous
-makePathToGLUT:
-	sudo mkdir /usr/local/include/GL
-	sudo ln -s /System/Library/Frameworks/GLUT.framework/Headers/glut.h /usr/local/include/GL
-
-# macに無理やり作った<GL/glut.h>を消す
-# !warning : this command is dangerous
-removePathToGLUT:
-	sudo rm -rf /usr/local/include/GL
+	rm -f *.o $(PROGRAM)
