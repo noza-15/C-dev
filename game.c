@@ -1,5 +1,4 @@
-﻿
-#include <stdlib.h>
+﻿#include <stdlib.h>
 #include <GL/glut.h>
 #include <math.h>
 #include "global.h"
@@ -263,19 +262,23 @@ static void renderAll(int width, int height) {
 	renderScore();
 }
 
+//スコアの表示
 static void renderScore() {
 	score  +=getWave();
 	char buf[64];
 	glColor3d(1, 0, 0);
 	sprintf_s(buf, sizeof(buf),"score %d", score);
-	printString(buf, window_width - 100, 20);
+	printString(buf, window_width - 120, 20);
 	
-	if ((frame_count - game_start_frame) % 300 == 0)changeWave();
+	if ((frame_count - game_start_frame) % 200 == 0)changeWave();
 	sprintf_s(buf, sizeof(buf), "WAVE: %d", getWave());
-	printString(buf, window_width - 100, 40);
+	printString(buf,
+		window_width - 120+rand() % (1+3*getWaveChangedFlag()),
+		40+rand()%(1+ 3 * getWaveChangedFlag()));
 
 }
 
+//スコア計算のリセット
 static void resetScore() {
 	game_start_frame = frame_count;
 	score = 0;

@@ -16,5 +16,10 @@ void initObstacles(void);
 void renderObstacles(void);
 void endObstacles(void);
 
+void changeWave(void);
+int getWave(void);
+void resetWave(void);
+int getWaveChangedFlag(void);
+
 
 #endif // _OBSTACLE_H_

@@ -30,6 +30,7 @@ static int residentList_end;
 #define MAX_RESIDENT 100    // 存在して良い障害物の上限
 
 static int wave=1;
+static int WAVE_CHANGED_FLAG = 0;
 
 // 確率的に障害物を発生して返す関数
 static resident residentBirth(void) {
@@ -101,6 +102,7 @@ void endObstacles(void) {
 
 void changeWave(void) {
 	wave+=1;
+	WAVE_CHANGED_FLAG = 30;
 	if (wave > 15)wave = 15;
 }
 
@@ -108,6 +110,16 @@ int getWave(void) {
 	return wave;
 }
 
-void resetWave() {
+void resetWave(void) {
 	wave = 1;
+}
+
+int getWaveChangedFlag(void) {
+	if (WAVE_CHANGED_FLAG>0) {
+		WAVE_CHANGED_FLAG --;
+		return 1;
+	}
+	else {
+		return 0;
+	}
 }
