@@ -41,11 +41,19 @@ Material emerald  = {   {0.31175,    0.9745,   0.31175,  1.0},
                         { 0.626959,0.727811, 0.626959,  1.0},
                         76.8                                    };
 
+//
+#define POSMAX 36
+#define SHIFT  0.4
+#define SPEED  0.007
+double pos[POSMAX] = {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0};
+
 // コンテンツの中身
 
 // ゲーム開始時に実行する
 static void ranking_init(void){
     printf("now ranking initialize.\n");
+
+    int i;
 
     {
         Light light0    = { {0.15, 0.15, 0.15, 1.0},    // ambient
@@ -64,6 +72,12 @@ static void ranking_init(void){
     }
 
     // fileの読み込み
+
+
+    // posの初期化
+    for(i=0;i<POSMAX;i++){
+        pos[i] = i*SHIFT;
+    }
 
 }
 
@@ -141,16 +155,83 @@ void ranking_disp(void){
     glOrtho(0.0,10.0,0.0,10.0*viewport_height/viewport_width,0.0,1.0);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
+    gluLookAt(0.0,0.0,0.0,0.0,0.0,-1.0,0.7,0.7,0.0);
+    int i,j;
+    glEnable(GL_LIGHTING);
+    for(i=0,j=0;i<POSMAX;i++){
+        pos[i] -= SPEED;
+        if(pos[i]<-1.0)pos[i]=SHIFT*(POSMAX)-1.0;
+        if(j==0){
+            glMaterialfv(GL_FRONT, GL_AMBIENT, ruby.ambient);
+            glMaterialfv(GL_FRONT, GL_DIFFUSE, ruby.diffuse);
+            glMaterialfv(GL_FRONT, GL_SPECULAR, ruby.specular);
+            glMaterialfv(GL_FRONT, GL_SHININESS, &ruby.shininess);
+            j=1;
+        }else if(j==1){
+            glMaterialfv(GL_FRONT, GL_AMBIENT, emerald.ambient);
+            glMaterialfv(GL_FRONT, GL_DIFFUSE, emerald.diffuse);
+            glMaterialfv(GL_FRONT, GL_SPECULAR, emerald.specular);
+            glMaterialfv(GL_FRONT, GL_SHININESS, &emerald.shininess);
+            j=2;
+        }else{
+            glMaterialfv(GL_FRONT, GL_AMBIENT, saphire.ambient);
+            glMaterialfv(GL_FRONT, GL_DIFFUSE, saphire.diffuse);
+            glMaterialfv(GL_FRONT, GL_SPECULAR, saphire.specular);
+            glMaterialfv(GL_FRONT, GL_SHININESS, &saphire.shininess);
+            j=0;
+        }
+        glBegin(GL_POLYGON);
+        glNormal3f(0.0,0.0,1.0);
+        glVertex3d(pos[i],      -20.0,  -0.9);
+        glVertex3d(pos[i]+0.1,  -20.0,  -0.9);
+        glVertex3d(pos[i]+0.1,  20.0,   -0.9);
+        glVertex3d(pos[i],      20.0,   -0.9);
+        glEnd();
+    }
+
+    // ページタイトル
+    glViewport(viewport_start_x+viewport_width/2-viewport_height/2,viewport_start_y+viewport_height*3/4,
+                viewport_height*2/3,viewport_height/6);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(0.0,4.0,0.0,1.0,0.0,1.0);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
     gluLookAt(0.0,0.0,0.0,0.0,0.0,-1.0,0.0,1.0,0.0);
-
-    // ここに背景
-
-    // ページタイトル用変換行列設定
-    // ページタイトルバック
-
-    // page title
+    glColor3d(0.2,0.2,0.2);
+    glDisable(GL_LIGHTING);
+    glBegin(GL_POLYGON);
+    glVertex3d(0.0,0.0,-0.01);
+    glVertex3d(4.0,0.0,-0.01);
+    glVertex3d(4.0,1.0,-0.01);
+    glVertex3d(0.0,1.0,-0.01);
+    glEnd();
+    glEnable(GL_LIGHTING);
     glColor3d(1.0,1.0,1.0);
-    drawRanking(0.0,10.0*viewport_height/viewport_width-0.5,0.0,0,0.0);
+    drawRanking(0.0,0.55,0.0,0,0.0);
+
+
+    // ページコンテンツ用変換行列設定
+    // ページコンテンツバック
+    glViewport(viewport_start_x+viewport_width/2-viewport_height*4/9,viewport_start_y+viewport_height/9,
+                viewport_height*8/9,viewport_height*5/9);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(0.0,8.0,0.0,5.0,0.0,1.0);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    gluLookAt(0.0,0.0,0.0,0.0,0.0,-1.0,0.0,1.0,0.0);
+    glColor3d(0.2,0.2,0.2);
+    glDisable(GL_LIGHTING);
+    glBegin(GL_POLYGON);
+    glVertex3d(0.0,0.0,-0.01);
+    glVertex3d(8.0,0.0,-0.01);
+    glVertex3d(8.0,5.0,-0.01);
+    glVertex3d(0.0,5.0,-0.01);
+    glEnd();
+    glEnable(GL_LIGHTING);
+
+    // ページコンテンツ
 
 
     // いらない
@@ -165,13 +246,11 @@ void ranking_disp(void){
     glVertex3d(1.0,2.0,0.0);
     glEnd();
 
-    // ページコンテンツ用変換行列設定
-    // ページコンテンツバック
-
-    // ページコンテンツ
-
     // メニューに戻る
+    glViewport(viewport_start_x,viewport_start_y,viewport_width,viewport_height);
+    glColor3d(0.9,0.9,0.9);
     printString("< back to menu | ", 40, viewport_height-40);
+
     glutSwapBuffers();
 }
 

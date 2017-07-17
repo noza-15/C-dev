@@ -45,7 +45,6 @@ static void menu_init(void) {
         objs[i][3] = (double)rand()/RAND_MAX*180.0;
         objs[i][4] = (double)rand()/RAND_MAX*180.0;
         objs[i][5] = (double)rand()/RAND_MAX*180.0;
-        printf("%lf,%lf,%lf\n",objs[i][0],objs[i][1],objs[i][2]);
     }
 }
 
